@@ -50,24 +50,38 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
     printQ(readyQ);
 
     // while not all processes have been serviced
-    while (serviced_q.size() < total_p)
+    while (serviced_q.size() != total_p)
     {
         // Check if any processes arrive at this time
+        // Check if any processes come back from I/O at this time
         // If so: add to readyQ
-        for (int i=0; i < total_p; i++)
+        for (int i = 0; i < total_p; i++)
         {
             if (all_p[i].get_arrival_time() == time )
             {
                 cout << "time " << time << "ms: Process " << all_p[i].get_id() << " arrived and added to ready queue ";
                 if(rradd == "BEGINNING")
                 {
-                  readyQ.insert(readyQ.begin(), all_p[i]);
+                  readyQ.push_front(all_p[i]);
                 }
                 else
                 {
                   readyQ.push_back(all_p[i]);
                 }
                 printQ(readyQ);
+            }
+            else if(all_p[i].getBlockedUntil() == time)
+            {
+              cout << "time " << time << "ms: Process " << all_p[i].get_id() << " finished I/O and added to ready queue ";
+              if(rradd == "BEGINNING")
+              {
+                readyQ.push_front(all_p[i]);
+              }
+              else
+              {
+                readyQ.push_back(all_p[i]);
+              }
+              printQ(readyQ);
             }
         }
 

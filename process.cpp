@@ -25,7 +25,7 @@ Process::Process(string gid, int arrival, int burst, int bcount, int io)
     burstTime = burst;
     numBursts =  bcount;
     ioTime = io;
-    blockedUntil = 0;
+    blockedUntil = -1;
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
@@ -70,11 +70,6 @@ int Process::getRemainingTimeInBurst() const
     return timeRemainingInBurst;
 }
 
-int Process::getTotalRemainingTime() const
-{
-    return totalRemainingTime;
-}
-
 bool Process::getServiced() const
 {
     return serviced;
@@ -91,10 +86,9 @@ void Process::setRemainingTimeInBurst(int b)
     timeRemainingInBurst = b;
 }
 
-void Process::decreaseBurst()
+void Process::decreaseCPUBurst()
 {
     numBursts--;
-    totalRemainingTime -= burstTime;
 }
 
 void Process::setServiced()
