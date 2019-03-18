@@ -23,6 +23,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   bool cpu_in_use = false; // only set to true while process in CPU
   unsigned int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
+  int burstEnd = -1;
 
   vector<Process> readyQ;
   vector<Process> serviceQ;
@@ -42,13 +43,30 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
       if(time == all_p[i].getArrivalTime())
       {
         readyQ.push_back(all_p[i]);
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived and added to ready queue ";
+        printQ(readyQ);
       }
       else if(time == all_p[i].getBlockedUntil())
       {
         readyQ.push_back(all_p[i]);
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
+        printQ(readyQ);
       }
     }
-    sort(readyQ.begin(), readyQ.end(), sortHelper);
+    sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
+
+    //burst ended, send to IO, reassign current process
+    if(cpuInUse && time == burstEnd)
+    {
+      
+    }
+    //time to put new process into the CPU
+    else if(!cpuInUse && time == startNextProcess)
+    {
+      currentProcess = readyQ[0];
+      startNextProcess = readyQ[0].getArrivalTime()
+    }
+
     time++;
   }
 
