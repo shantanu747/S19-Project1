@@ -12,10 +12,16 @@ Process::Process() // default constructor
     burstTime = 0;
     numBursts =  0;
     ioTime = 0;
+    numIO = 0;
+    cpuTime = 0;
+    timeInIO = 0;
     blockedUntil = -1;
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
+    timeRemainingInBurst = 0;
+    preemptedCount = 0;
+    contextSwitchCount = 0;
 }
 
 Process::Process(string gid, int arrival, int burst, int bcount, int io)
@@ -32,8 +38,9 @@ Process::Process(string gid, int arrival, int burst, int bcount, int io)
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
-    timeRemainingInBurst = 0;
-    totalRemainingTime = timeNeeded;
+    timeRemainingInBurst = burst;
+    preemptedCount = 0;
+    contextSwitchCount = 0;
 }
 
 // ACCESSORS

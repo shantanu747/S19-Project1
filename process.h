@@ -31,8 +31,8 @@ public:
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
     void setRemainingTimeInBurst(int b); //required for pre-emptive algorithms
-    void decreaseCPUBurst();
-    void decreaseIOBursts();
+    void decreaseCPUBursts(); //reduce number of CPU bursts needed by 1
+    void decreaseIOBursts(); //reduce number of IO bursts needed by 1
     void setServiced(); //process has finished executing
     void setTurnaroundTime(int t);
     void addContextSwitch();
@@ -45,13 +45,12 @@ private:
     int burstTime; //how long each burst lasts
     int numBursts; //number of CPU bursts
     int ioTime; //how long each IO operation takes
-    int numIO;
-    int timeInIO;
-    int timeNeeded;
+    int numIO; //number of IO bursts needed
+    int timeInIO; // total time spent in IO
+    int cpuTime; // total time in CPU
     int blockedUntil;
     bool serviced;
 
-    int cpuTime;
     int turnaroundTime;
     int waitTime;
     int timeRemainingInBurst;

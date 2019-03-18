@@ -18,7 +18,7 @@ void FCFS(vector<Process> all_p, string fname){
 
     bool cpu_in_use = false;
     vector<Process> readyQ;
-    vector<Process> serviced_q;
+    vector<Process> serviceQ;
 
     int context_switches = 0;
     float total_turn_around_time = 0;
@@ -28,7 +28,7 @@ void FCFS(vector<Process> all_p, string fname){
     cout << "time " << time << "ms: Simulator started for FCFS ";
     printQ(readyQ);
 
-    while (serviced_q.size() < total_p)
+    while (serviceQ.size() < total_p)
     {
         for (unsigned int i=0; i<total_p; i++)
         {
@@ -115,7 +115,7 @@ void FCFS(vector<Process> all_p, string fname){
                 cout << "time " << time << "ms: Process " << all_p[current_process_index].get_id() << " terminated ";
                 printQ(readyQ);
 
-                serviced_q.push_back(all_p[current_process_index]);
+                serviceQ.push_back(all_p[current_process_index]);
                 all_p.erase(all_p.begin() + current_process_index);
             }
         }

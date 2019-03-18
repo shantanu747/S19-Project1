@@ -6,20 +6,22 @@
 #include <dequeue>
 #include <iomanip>
 #include "process.h"
-#include "functions.h"
 
 using namespace std;
 
-void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behavior)
+void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 {
-    int total_p = all_p.size(); // total processes received at the beginning of config
+    dequeue<Process> all_p;
+    for(int i = 0; i < p.size(); i++) //convert to dequeue for push_front
+    {
+      all_p.push_back(p[i]);
+    }
+
     int t_cs = switch_time; // takes this much time to make a context switch
     int t_slice = tslice; // time slice for RR algorithm
     bool cpu_in_use = false; // only set to true while process in CPU
     string rradd = behavior;
-    int time = 0; // overall timer for simulation
-    int preemptions = 0;
-    int context_switches = 0;
+    unsigned int time = 0; // overall timer for simulation
     int start_next_process = t_cs/2; // By default first process should not start before this time
     int burst_start = 0;
     int burst_end = 0; // acts as marker for when next context switch/preemption should occur
@@ -33,30 +35,23 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
     float avg_wt = 0.0; // average wait time
 
     dequeue<Process> readyQ;
-    dequeue<Process> serviced_q;
+    dequeue<Process> serviceQ;
 
-    string curent_process; // holds ID of current process being serviced
+    Process curent_process; // holds ID of current process being serviced
     int current_process_index = 0;
-
-    for(int i = 0; i < total_p; i++)
-    {
-        total_burst_times += (all_p[i].get_burst_count() * all_p[i].get_burst_time());
-        all_p[i].set_time_needed();
-        all_p[i].set_remaining_time_in_current_burst(all_p[i].get_burst_time());
-    }
 
     // Begin algorithm simulation
     cout << "time " << time << "ms: Simulator started for RR ";
     printQ(readyQ);
 
     // while not all processes have been serviced
-    while (serviced_q.size() != total_p)
+    while (serviceQ.size() != all_p.size())
     {
-        // Check if any processes arrive at this time
-        // Check if any processes come back from I/O at this time
-        // If so: add to readyQ
-        for (int i = 0; i < total_p; i++)
+        //before adding/removing any process from CPU, make sure we have
+        //the proper readyQ needed
+        for (int i = 0; i < all_p.size(); i++)
         {
+            // Check if any processes arrive at this time
             if (all_p[i].get_arrival_time() == time )
             {
                 cout << "time " << time << "ms: Process " << all_p[i].get_id() << " arrived and added to ready queue ";
@@ -70,6 +65,7 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
                 }
                 printQ(readyQ);
             }
+            // Check if any processes come back from I/O at this time
             else if(all_p[i].getBlockedUntil() == time)
             {
               cout << "time " << time << "ms: Process " << all_p[i].get_id() << " finished I/O and added to ready queue ";
@@ -85,19 +81,52 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
             }
         }
 
+        //CPU currently in use
+        if(cpu_in_use)
+        {
+          //timeslice expired, other processes waiting for CPU time
+          //perform a context switch
+          if(burst_end != 0 && time == burst_end && readyQ.size() != 0)
+          {
+            if(current_process.getRemainingTimeInBurst()==0)//CPU burst finished
+            {
+              current_process.decreaseCPUBursts();
+              if(current_process.getNumBursts()==0 && current_process.getIOBursts()==0)
+              {
+                //process just finished CPU burst, has no more CPU or IO bursts remaining
+                //process is serviced
+                current_process.setServiced();
+                serviceQ.push_back(current_process);
+              }
+
+            }
+          }
+          //timeslice expired but no other process waiting for cpu
+          //do not perform context switch
+          else if(burst_end!=0 && time==burst_end && readyQ.size()==0)
+          {
+
+          }
+          //if timeslice still not expired no need to do anything else
+          //let current CPU burst continue
+        }
+        //CPU not in use
+        else if(!cpu_in_use)
+        {
+          if(time == start_next_process) //time to load new process into CPU
+          {
+            current_process = readyQ[0];
+            readyQ.erase(readyQ.begin());
+
+          }
+        }
+
         // check current conditions and service next process if everything checks out
         if  ((!cpu_in_use)
              && time == start_next_process
              && (readyQ.size() != 0))
         {
-            curent_process = readyQ[0].get_id();
-            for (int i =0; i< total_p ; i++ )
-            {
-                if (all_p[i].get_id() == curent_process){
-                    current_process_index = i;
-                }
-            }
-
+            
             cout << "time " << time << "ms: Process " << curent_process << " started using the CPU ";
             if (all_p[current_process_index].getRemainingTimeInBurst() != all_p[current_process_index].get_burst_time()){
                 cout << "with " << all_p[current_process_index].getRemainingTimeInBurst() <<"ms remaining ";
@@ -135,7 +164,7 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
                    /* all_p[i].set_serviced();
                     int turnaround = time -all_p[i].get_arrival_time();
                     all_p[i].set_turn_around_time(turnaround);
-                    serviced_q.push_back(all_p[i]);*/
+                    serviceQ.push_back(all_p[i]);*/
                 }
                 else { // more bursts needed
 
@@ -177,7 +206,7 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
                     all_p[current_process_index].set_serviced();
                     int turnaround = time -all_p[current_process_index].get_arrival_time();
                     all_p[current_process_index].set_turn_around_time(turnaround);
-                    serviced_q.push_back(all_p[current_process_index]);
+                    serviceQ.push_back(all_p[current_process_index]);
 
                 }
                 else
@@ -234,13 +263,15 @@ void RR(dequeue<Process> all_p, int n, int switch_time, int tslice, string behav
             }
         }
         time ++ ;
-
-
     }
+
+    // calculations for avg algorithm stats
     for(int i = 0; i < all_p.size(); i++)
     {
-        total_turn_around_time += all_p[i].get_turn_time();
-        total_wait_time += all_p[i].get_wait_time();
+      int preemptions = 0;
+      int context_switches = 0;
+      total_turn_around_time += all_p[i].get_turn_time();
+      total_wait_time += all_p[i].get_wait_time();
     }
     cout <<"time " << time+2 << "ms: Simulator ended for RR" ;
 

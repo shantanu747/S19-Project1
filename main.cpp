@@ -19,9 +19,9 @@ using namespace std;
 // after each simulation algorithm ends, we regenerate vector<Process>
 // with new burst times, burst count, io times
 // call next simulation
-dequeue<Process> process_helper()
+vector<Process> process_helper()
 {
-  dequeue<Process> all_processes;
+  vector<Process> all_processes;
   /* Code to create processes and assign:
       - arrival time
       - cpu time per busrt
@@ -72,7 +72,7 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
   /*
-  dequeue<Process> processes;
+  vector<Process> processes;
   processes = process_helper();
   SJF(processes, n, t_cs);
   processes = process_helper();
