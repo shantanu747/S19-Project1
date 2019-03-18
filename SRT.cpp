@@ -22,12 +22,14 @@ void srt(vector<Process> p, int n, int t_cs){
     vector<Process> all_processes = p; //Copy of the passed in process vector
     vector<Process> readyQ; //Waiting processes get added here
     vector<Process> serviceQ; //Finished processes get added here
-    Process currentProcess; //to hold the data for the current bursting process
+    Process currentProcess; //To hold the data for the current bursting process
 
-    bool cpuInUse = false; //set to true only when the CPU is being used
+    bool cpuInUse = false; //Set to true only when the CPU is being used
     unsigned int funcTime = 0; //Total running time (in loop iterations)
+    int startNextProcess = -1; //Next process should start at this time iff there are no preemptions
+    bool firstProcessArrived = false;
 
-    cout << "time " << time << "ms: Simulator started for RR ";
+    cout << "time " << funcTime << "ms: Simulator started for RR ";
     printQ(readyQ);
 
     //Iterates until all processes have been added to serviceQ
@@ -36,7 +38,19 @@ void srt(vector<Process> p, int n, int t_cs){
         //Iterates over each process to see if there should be
         //a context switch due to a new process arriving
         for(int i = 0; i < all_processes.size(); i++){
-            
+
+            //Check to see if i-th process arrives *now*
+            if(all_processes[i].getArrivalTime() == funcTime){
+                cout << "time " << funcTime << "ms: Process " << all_processes[i].getID() << " arrived and added to ready queue ";
+                readyQ.push_back(all_processes[i]);
+
+                //Signifies the first process has arrived
+                //Necessary because nothing preempts the first process
+                if(!firstProcessArrived){
+                    firstProcessArrived = true;
+                    startNextProcess = readyQ[0].getArrivalTime() + t_cs/2;
+                }
+            }
         }
         funcTime++;
     }
