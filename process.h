@@ -24,14 +24,20 @@ public:
     int getBlockedUntil() const;
     int getRemainingTimeInBurst() const;
     bool getServiced() const;
+    int getContextSwitchCount() const;
+    int getWaitTime() const;
+    int getPreemptedCount() const;
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
     void setRemainingTimeInBurst(int b); //required for pre-emptive algorithms
     void decreaseCPUBurst();
+    void decreaseIOBursts();
     void setServiced(); //process has finished executing
     void setTurnaroundTime(int t);
-    //void setTimeNeeded(); /* deprectaed */
+    void addContextSwitch();
+    void addWaitTime(int w);
+    void addPreemptedCount();
 
 private:
     string pid;
@@ -40,6 +46,7 @@ private:
     int numBursts; //number of CPU bursts
     int ioTime; //how long each IO operation takes
     int numIO;
+    int timeInIO;
     int timeNeeded;
     int blockedUntil;
     bool serviced;
@@ -48,7 +55,7 @@ private:
     int turnaroundTime;
     int waitTime;
     int timeRemainingInBurst;
-    int preemptedTime;
+    int preemptedCount;
     int contextSwitchCount;
 };
 

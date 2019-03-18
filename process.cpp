@@ -12,7 +12,7 @@ Process::Process() // default constructor
     burstTime = 0;
     numBursts =  0;
     ioTime = 0;
-    blockedUntil = 0;
+    blockedUntil = -1;
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
@@ -25,12 +25,14 @@ Process::Process(string gid, int arrival, int burst, int bcount, int io)
     burstTime = burst;
     numBursts =  bcount;
     ioTime = io;
-    blockedUntil = -1;
+    numIO = numBursts - 1; //1 less I/O burst needed than CPU bursts
+    cpuTime = burstTime*numBursts;
+    timeInIO = ioTime*numIO; //total time that will be spent in IO
+    blockedUntil = -1; //doesn't trigger at time 0
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
-    timeRemainingInBurst = burst;
-    setTimeNeeded();
+    timeRemainingInBurst = 0;
     totalRemainingTime = timeNeeded;
 }
 
@@ -60,6 +62,11 @@ int Process::getIOTime() const
     return ioTime;
 }
 
+int Process::getIOBursts() const
+{
+  return numIO;
+}
+
 int Process::getBlockedUntil() const
 {
     return blockedUntil;
@@ -75,6 +82,21 @@ bool Process::getServiced() const
     return serviced;
 }
 
+int Process::getContextSwitchCount() const
+{
+  return contextSwitchCount;
+}
+
+int Process::getWaitTime() const
+{
+  return waitTime;
+}
+
+int Process::getPreemptedCount() const
+{
+  return preemptedCount;
+}
+
 //MODIFIERS
 void Process::setBlockedUntil(int b)
 {
@@ -86,9 +108,14 @@ void Process::setRemainingTimeInBurst(int b)
     timeRemainingInBurst = b;
 }
 
-void Process::decreaseCPUBurst()
+void Process::decreaseCPUBursts()
 {
-    numBursts--;
+    numBursts -= 1;
+}
+
+void Process::decreaseIOBursts()
+{
+  numIO -= 1;
 }
 
 void Process::setServiced()
@@ -101,9 +128,17 @@ void Process::setTurnaroundTime(int t)
     turnaroundTime = t;
 }
 
-/* DEPRECATED
-void Process::setTimeNeeded()
+void Process::addContextSwitch()
 {
-    timeNeeded = (burstTime * numBursts);
+  contextSwitchCount += 1;
 }
-*/
+
+void Process::addWaitTime(int w)
+{
+  waitTime += w;
+}
+
+void Process::addPreemptedCount()
+{
+  preemptedCount += 1;
+}
