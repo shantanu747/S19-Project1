@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
   int upper_bound = atoi(argv[3]);
   int n = atoi(argv[4]);
   int t_cs = atoi(argv[5]);
-  itn alpha = atoi(argv[6]);
+  int alpha = atoi(argv[6]);
   int timeslice = atoi(argv[7]);
   string rradd;
   if(argc = 9) //optional argument supplied
