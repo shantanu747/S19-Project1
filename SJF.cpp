@@ -19,6 +19,7 @@ bool sortHelper(Process a, Process b)
 void SFJ(vector<Process> all_p, int n, int switch_time)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
+  int startNextIO = -1;
   int numProcesses = n;
   bool cpu_in_use = false; // only set to true while process in CPU
   unsigned int time = 0; // overall timer for simulation
@@ -58,7 +59,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
     //burst ended, send to IO, reassign current process
     if(cpuInUse && time == burstEnd)
     {
-      
+      cout << "time " << time << "ms: Process " << currentProcess.getID() << " finished I/O and added to ready queue ";
     }
     //time to put new process into the CPU
     else if(!cpuInUse && time == startNextProcess)
