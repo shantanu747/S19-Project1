@@ -15,7 +15,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
     int time = 0;
     int burst_end = 0;
     int burst_start = 0;
-    int currentProcess_index = 0;
+    int DELETE = 0;
     string currentProcess;
 
     bool cpu_in_use = false;
@@ -61,7 +61,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
 
             for (unsigned int i=0; i<all_p.size(); i++){
                 if (currentProcess == all_p[i].get_id()){
-                    currentProcess_index = i;
+                    DELETE = i;
                 }
             }
 
@@ -77,48 +77,48 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
         }
         else if (time == burst_end && burst_end != 0)
         {
-            if (!all_p[currentProcess_index].get_serviced()){
-                total_turn_around_time += (burst_end - all_p[currentProcess_index].get_arrival_time());
+            if (!all_p[DELETE].get_serviced()){
+                total_turn_around_time += (burst_end - all_p[DELETE].get_arrival_time());
             }
             else{
-                total_turn_around_time += (burst_end - all_p[currentProcess_index].get_blocked_until());
+                total_turn_around_time += (burst_end - all_p[DELETE].get_blocked_until());
             }
             total_burst_times += (burst_end - burst_start);
 
             cpu_in_use = false;
-            all_p[currentProcess_index].set_serviced();
+            all_p[DELETE].set_serviced();
             //decrease the burst count
             //if burst count > 0 throw back in q and update blocked until
             //else put it in the serviced q and remove from all_p
-            if (all_p[currentProcess_index].get_burst_count() > 1){
+            if (all_p[DELETE].get_burst_count() > 1){
                 string b ;
 
-                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id() << " completed a CPU burst; ";
-                all_p[currentProcess_index].decrease_bursts();
+                cout << "time " << time << "ms: Process " << all_p[DELETE].get_id() << " completed a CPU burst; ";
+                all_p[DELETE].decrease_bursts();
 
-                all_p[currentProcess_index].set_blocked_until(time +
-                                                               all_p[currentProcess_index].get_io_time()+3);
-                if (all_p[currentProcess_index].get_burst_count() == 1){
+                all_p[DELETE].set_blocked_until(time +
+                                                               all_p[DELETE].get_io_time()+3);
+                if (all_p[DELETE].get_burst_count() == 1){
                     b = "burst";
                 }else {b = "bursts";}
-                cout << all_p[currentProcess_index].get_burst_count() << " " << b <<" to go ";
+                cout << all_p[DELETE].get_burst_count() << " " << b <<" to go ";
                 printQ(readyQ);
-                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id()<< " switching out of CPU; will block on I/O until time ";
-                cout << all_p[currentProcess_index].get_blocked_until() << "ms ";
+                cout << "time " << time << "ms: Process " << all_p[DELETE].get_id()<< " switching out of CPU; will block on I/O until time ";
+                cout << all_p[DELETE].get_blocked_until() << "ms ";
                 printQ(readyQ);
 
             }
             else
             {
-                all_p[currentProcess_index].decrease_bursts();
-                all_p[currentProcess_index].set_blocked_until(time +
-                                                               all_p[currentProcess_index].get_io_time());
+                all_p[DELETE].decrease_bursts();
+                all_p[DELETE].set_blocked_until(time +
+                                                               all_p[DELETE].get_io_time());
 
-                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id() << " terminated ";
+                cout << "time " << time << "ms: Process " << all_p[DELETE].get_id() << " terminated ";
                 printQ(readyQ);
 
-                serviceQ.push_back(all_p[currentProcess_index]);
-                all_p.erase(all_p.begin() + currentProcess_index);
+                serviceQ.push_back(all_p[DELETE]);
+                all_p.erase(all_p.begin() + DELETE);
             }
         }
 

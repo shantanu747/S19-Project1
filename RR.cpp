@@ -21,6 +21,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     int t_cs = switch_time; // takes this much time to make a context switch
     int t_slice = tslice; // time slice for RR algorithm
     bool cpu_in_use = false; // only set to true while process in CPU
+    bool firstProcessArrived = false;
     //bool cpu_blocked = false; //block during context switch
     string rradd = behavior; //BEGINNING OR END
     unsigned int time = 0; // overall timer for simulation
@@ -56,6 +57,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                   readyQ.push_back(all_p[i]);
                 }
                 printQ(readyQ);
+                /* ILLOGICAL */
                 if(readyQ.size()==1)
                 {
                   //first process arrived at whatever time it did
