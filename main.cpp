@@ -12,7 +12,8 @@
 #include <deque>
 #include <cassert>
 
-//#include "process.h"
+#include "process.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -30,44 +31,6 @@ vector<Process> process_helper()
       Goes here
   */
   return all_processes;
-}
-
-void printQ(vector<Process> all)
-{
-    if (all.size() == 0)
-    {
-        cout << "[Q <empty>]" << endl;
-        return;
-    }
-    string q;
-    q += "[Q ";
-    for (int i = 0; i < all.size(); i++)
-    {
-        q += all_p[i].getID();
-        q += " ";
-    }
-    //q.pop_back();
-    q += "]";
-    cout << q << endl;
-}
-
-void printQ(deque<Process> all)
-{
-    if (all.size() == 0)
-    {
-        cout << "[Q <empty>]" << endl;
-        return;
-    }
-    string q;
-    q += "[Q ";
-    for (int i = 0; i < all.size(); i++)
-    {
-        q += all_p[i].getID();
-        q += " ";
-    }
-    //q.pop_back();
-    q += "]";
-    cout << q << endl;
 }
 
 int main(int argc, char const *argv[])

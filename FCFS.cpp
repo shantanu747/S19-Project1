@@ -1,12 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "process.h"
 #include <stdlib.h>
 #include <iomanip>
+#include "process.h"
+#include "functions.h"
 using namespace std;
 
-void FCFS(vector<Process> all_p, string fname){
+void FCFS(vector<Process> all_p, int n, int switch_time)
+{
     int t_cs = 6;
     unsigned int total_p = all_p.size();
 

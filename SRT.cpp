@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <algorithm>
 #include "process.h"
+#include "functions.h"
 
 using namespace std;
       // process vector | num inputs
@@ -16,7 +17,7 @@ bool sortHelper(Process a, Process b)
   return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
 }
 
-void srt(vector<Process> p, int n){
+void SRT(vector<Process> p, int n){
 
     //Convert input process vector into a deque
     deque<Process> all_processes;

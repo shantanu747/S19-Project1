@@ -6,6 +6,7 @@
 #include <deque>
 #include <iomanip>
 #include "process.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
         for (int i = 0; i < all_p.size(); i++)
         {
             // Check if any processes arrive at this time
-            if (all_p[i].get_arrival_time() == time )
+            if (all_p[i].getArrivalTime() == time )
             {
                 cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived and added to ready queue ";
                 if(rradd == "BEGINNING")
