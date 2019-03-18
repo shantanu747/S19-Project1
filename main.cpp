@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <sstream>
-#include <dequeue>
+#include <deque.h>
 #include <cassert>
 
 //#include "process.h"

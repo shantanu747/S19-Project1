@@ -36,7 +36,7 @@ public:
     void setServiced(); //process has finished executing
     void setTurnaroundTime(int t);
     void addContextSwitch();
-    void addWaitTime(int w);
+    void setWaitTime(int w);
     void addPreemptedCount();
 
 private:

@@ -140,7 +140,7 @@ void Process::addContextSwitch()
   contextSwitchCount += 1;
 }
 
-void Process::addWaitTime(int w)
+void Process::setWaitTime(int w)
 {
   waitTime += w;
 }

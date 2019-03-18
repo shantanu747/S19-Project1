@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <string>
-#include <dequeue>
+#include <deque>
 #include <iomanip>
 #include "process.h"
 
@@ -11,8 +11,8 @@ using namespace std;
 
 void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 {
-    dequeue<Process> all_p;
-    for(int i = 0; i < p.size(); i++) //convert to dequeue for push_front
+    deque<Process> all_p;
+    for(int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
       all_p.push_back(p[i]);
     }
@@ -20,22 +20,15 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     int t_cs = switch_time; // takes this much time to make a context switch
     int t_slice = tslice; // time slice for RR algorithm
     bool cpu_in_use = false; // only set to true while process in CPU
-    string rradd = behavior;
+    bool cpu_blocked = false;
+    string rradd = behavior; //BEGINNING OR END
     unsigned int time = 0; // overall timer for simulation
-    int start_next_process = t_cs/2; // By default first process should not start before this time
+    int startNextProcess = -1; // By default first process should not start before this time
     int burst_start = 0;
-    int burst_end = 0; // acts as marker for when next context switch/preemption should occur
+    int burst_end = -1; // acts as marker for when next context switch/preemption should occur
 
-    float total_turn_around_time = 0;
-    float total_burst_times = 0;
-    float total_wait_time = 0;
-
-    float avg_tat = 0.0; // average turn around time
-    float avg_bt = 0.0; // average burst time
-    float avg_wt = 0.0; // average wait time
-
-    dequeue<Process> readyQ;
-    dequeue<Process> serviceQ;
+    deque<Process> readyQ;
+    deque<Process> serviceQ;
 
     Process curent_process; // holds ID of current process being serviced
     int current_process_index = 0;
@@ -64,6 +57,12 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                   readyQ.push_back(all_p[i]);
                 }
                 printQ(readyQ);
+                if(readyQ.size()==1)
+                {
+                  //first process arrived at whatever time it did
+                  //set startNextProcess to arrival time plus t_cs/2
+                  startNextProcess = readyQ[0].getArrivalTime() + (t_cs/2);
+                }
             }
             // Check if any processes come back from I/O at this time
             else if(all_p[i].getBlockedUntil() == time)
@@ -113,20 +112,32 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
         //CPU not in use
         else if(!cpu_in_use)
         {
-          if(time == start_next_process) //time to load new process into CPU
+          if(time == startNextProcess && readyQ.size() != 0) //time to load new process into CPU
           {
             current_process = readyQ[0];
             readyQ.erase(readyQ.begin());
-
+            //burst will finish before or at the same time that timeslice expires
+            if(current_process.getRemainingTimeInBurst() <= t_slice)
+            {
+              burst_end = time + current_process.getRemainingTimeInBurst();
+            }
+            //timeslice will expire first, setRemainingTimeInBurst used to save the difference
+            else
+            {
+              burst_end = time + t_slice;
+              int difference = current_process.getRemainingTimeInBurst() - t_slice;
+              current_process.setRemainingTimeInBurst(difference);
+            }
+            cpu_in_use = true;
           }
         }
 
         // check current conditions and service next process if everything checks out
         if  ((!cpu_in_use)
-             && time == start_next_process
+             && time == startNextProcess
              && (readyQ.size() != 0))
         {
-            
+
             cout << "time " << time << "ms: Process " << curent_process << " started using the CPU ";
             if (all_p[current_process_index].getRemainingTimeInBurst() != all_p[current_process_index].get_burst_time()){
                 cout << "with " << all_p[current_process_index].getRemainingTimeInBurst() <<"ms remaining ";
@@ -169,7 +180,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 else { // more bursts needed
 
                     cout << "time " << time << "ms: Process " << all_p[i].get_id() << " completed I/O; added to ready queue " ;
-                    start_next_process = time + 3;
+                    startNextProcess = time + 3;
                     readyQ.push_back(all_p[i]);
                     all_p[i].set_remaining_time_in_current_burst(all_p[i].get_burst_time());
                     printQ(readyQ);
@@ -198,7 +209,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
                 all_p[current_process_index].set_blocked_until(temp);
                 cpu_in_use = false;
-                start_next_process = time + t_cs*2;
+                startNextProcess = time + t_cs*2;
                 all_p[current_process_index].decrease_bursts();
                 all_p[current_process_index].set_remaining_time_in_current_burst(all_p[current_process_index].get_burst_time());
                 if (all_p[current_process_index].get_burst_count() == 0){
@@ -229,7 +240,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             else if (all_p[current_process_index].getRemainingTimeInBurst() == 0 && all_p[current_process_index].get_burst_count() == 0){
                 cout << "time " << time << "ms: Process " << curent_process << " completed a CPU burst ";
                 cpu_in_use = false;
-                start_next_process = time + 2* t_cs;
+                startNextProcess = time + 2* t_cs;
 
             }
             else if (readyQ.size() == 0) // no context switch
@@ -255,7 +266,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             {
 
                 cout << "time " << time << "ms: Time slice expired; process " << all_p[current_process_index].get_id() << " preempted with " << all_p[current_process_index].getRemainingTimeInBurst() << "ms to go ";
-                start_next_process = time + t_cs*2; // do not let next process use CPU until this time
+                startNextProcess = time + t_cs*2; // do not let next process use CPU until this time
                 cpu_in_use = false; // CPU is currently not in use anymore
                 preemptions++;
                 printQ(readyQ);
@@ -266,6 +277,14 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     }
 
     // calculations for avg algorithm stats
+    float total_turn_around_time = 0;
+    float total_burst_times = 0;
+    float total_wait_time = 0;
+
+    float avg_tat = 0.0; // average turn around time
+    float avg_bt = 0.0; // average burst time
+    float avg_wt = 0.0; // average wait time
+
     for(int i = 0; i < all_p.size(); i++)
     {
       int preemptions = 0;
@@ -279,17 +298,5 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     avg_bt = total_burst_times / float(context_switches);
     avg_wt = total_wait_time / float(context_switches);
     file_writer(avg_bt, avg_wt, avg_tat, context_switches, preemptions, fname, "RR");
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
