@@ -13,8 +13,8 @@ void FCFS(vector<Process> all_p, string fname){
     int time = 0;
     int burst_end = 0;
     int burst_start = 0;
-    int current_process_index = 0;
-    string current_process;
+    int currentProcess_index = 0;
+    string currentProcess;
 
     bool cpu_in_use = false;
     vector<Process> readyQ;
@@ -54,12 +54,12 @@ void FCFS(vector<Process> all_p, string fname){
             && ((!cpu_in_use && time >= burst_end + 6) || time == t_cs*0.5)
             && time >= readyQ[0].get_blocked_until() + 3){
 
-            current_process = readyQ[0].get_id();
+            currentProcess = readyQ[0].get_id();
             context_switches++;
 
             for (unsigned int i=0; i<all_p.size(); i++){
-                if (current_process == all_p[i].get_id()){
-                    current_process_index = i;
+                if (currentProcess == all_p[i].get_id()){
+                    currentProcess_index = i;
                 }
             }
 
@@ -75,48 +75,48 @@ void FCFS(vector<Process> all_p, string fname){
         }
         else if (time == burst_end && burst_end != 0)
         {
-            if (!all_p[current_process_index].get_serviced()){
-                total_turn_around_time += (burst_end - all_p[current_process_index].get_arrival_time());
+            if (!all_p[currentProcess_index].get_serviced()){
+                total_turn_around_time += (burst_end - all_p[currentProcess_index].get_arrival_time());
             }
             else{
-                total_turn_around_time += (burst_end - all_p[current_process_index].get_blocked_until());
+                total_turn_around_time += (burst_end - all_p[currentProcess_index].get_blocked_until());
             }
             total_burst_times += (burst_end - burst_start);
 
             cpu_in_use = false;
-            all_p[current_process_index].set_serviced();
+            all_p[currentProcess_index].set_serviced();
             //decrease the burst count
             //if burst count > 0 throw back in q and update blocked until
             //else put it in the serviced q and remove from all_p
-            if (all_p[current_process_index].get_burst_count() > 1){
+            if (all_p[currentProcess_index].get_burst_count() > 1){
                 string b ;
 
-                cout << "time " << time << "ms: Process " << all_p[current_process_index].get_id() << " completed a CPU burst; ";
-                all_p[current_process_index].decrease_bursts();
+                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id() << " completed a CPU burst; ";
+                all_p[currentProcess_index].decrease_bursts();
 
-                all_p[current_process_index].set_blocked_until(time +
-                                                               all_p[current_process_index].get_io_time()+3);
-                if (all_p[current_process_index].get_burst_count() == 1){
+                all_p[currentProcess_index].set_blocked_until(time +
+                                                               all_p[currentProcess_index].get_io_time()+3);
+                if (all_p[currentProcess_index].get_burst_count() == 1){
                     b = "burst";
                 }else {b = "bursts";}
-                cout << all_p[current_process_index].get_burst_count() << " " << b <<" to go ";
+                cout << all_p[currentProcess_index].get_burst_count() << " " << b <<" to go ";
                 printQ(readyQ);
-                cout << "time " << time << "ms: Process " << all_p[current_process_index].get_id()<< " switching out of CPU; will block on I/O until time ";
-                cout << all_p[current_process_index].get_blocked_until() << "ms ";
+                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id()<< " switching out of CPU; will block on I/O until time ";
+                cout << all_p[currentProcess_index].get_blocked_until() << "ms ";
                 printQ(readyQ);
 
             }
             else
             {
-                all_p[current_process_index].decrease_bursts();
-                all_p[current_process_index].set_blocked_until(time +
-                                                               all_p[current_process_index].get_io_time());
+                all_p[currentProcess_index].decrease_bursts();
+                all_p[currentProcess_index].set_blocked_until(time +
+                                                               all_p[currentProcess_index].get_io_time());
 
-                cout << "time " << time << "ms: Process " << all_p[current_process_index].get_id() << " terminated ";
+                cout << "time " << time << "ms: Process " << all_p[currentProcess_index].get_id() << " terminated ";
                 printQ(readyQ);
 
-                serviceQ.push_back(all_p[current_process_index]);
-                all_p.erase(all_p.begin() + current_process_index);
+                serviceQ.push_back(all_p[currentProcess_index]);
+                all_p.erase(all_p.begin() + currentProcess_index);
             }
         }
 
