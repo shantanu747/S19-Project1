@@ -1,7 +1,17 @@
-/Users/spatil/Documents/GitHub/S19-Project1/main.cpp:66:13: error: no viable conversion from 'Process *' to 'Process'
-    Process t = new Process(pid, arrivalTime, burstTime, bursts, ioTime);
-            ^   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/Users/spatil/Documents/GitHub/S19-Project1/process.h:11:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'Process *' to 'const Process &' for 1st argument; dereference the argument with *
-class Process
-      ^
-1 error generated.
+Undefined symbols for architecture x86_64:
+  "Process::Process(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int, int)", referenced from:
+      process_helper() in main-e4ff5c.o
+  "Process::getIOBursts() const", referenced from:
+      _main in main-e4ff5c.o
+  "Process::getBurstTime() const", referenced from:
+      _main in main-e4ff5c.o
+  "Process::getNumBursts() const", referenced from:
+      _main in main-e4ff5c.o
+  "Process::getID() const", referenced from:
+      printQ(std::__1::vector<Process, std::__1::allocator<Process> >&) in main-e4ff5c.o
+      printQ(std::__1::deque<Process, std::__1::allocator<Process> >&) in main-e4ff5c.o
+      _main in main-e4ff5c.o
+  "Process::getIOTime() const", referenced from:
+      _main in main-e4ff5c.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
