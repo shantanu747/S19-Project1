@@ -29,7 +29,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   vector<Process> readyQ;
   vector<Process> serviceQ;
   Process currentProcess;
-  Process nextProcess;
+  Process IOProcess;
 
   // Begin algorithm simulation
   cout << "time " << time << "ms: Simulator started for SJF ";
@@ -51,6 +51,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
       {
         readyQ.push_back(all_p[i]);
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
+        all_p[i].decreaseIOBursts(); //another IO burst finished, decrement counter for remaining bursts
         printQ(readyQ);
       }
     }
@@ -59,13 +60,36 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
     //burst ended, send to IO, reassign current process
     if(cpuInUse && time == burstEnd)
     {
-      cout << "time " << time << "ms: Process " << currentProcess.getID() << " finished I/O and added to ready queue ";
+      cout << "time " << time << "ms: Process " << currentProcess.getID() << " completed a CPU burst ";
+      currentProcess.decreaseCPUBursts();
+      if(currentProcess.getNumBursts()==0)
+      {
+        //process is finished, no need for IO
+        currentProcess.setServiced();
+        startNextProcess = time + t_cs;
+      }
+      else if(currentProcess.getNumBursts() > 0)
+      {
+        //IO needed
+        startNextIO = time + (t_cs/2);
+        startNextProcess = time + t_cs;
+        IOProcess = currentProcess;
+        int returnTime = startNextIO + IOProcess.getIOTime();
+        IOProcess.setBlockedUntil(returnTime);
+        IOProcess.addContextSwitch(); //increment context switch count for this process
+        cpuInUse = false;
+      }
     }
     //time to put new process into the CPU
     else if(!cpuInUse && time == startNextProcess)
     {
       currentProcess = readyQ[0];
-      startNextProcess = readyQ[0].getArrivalTime()
+
+    }
+
+    if(time == startNextIO)
+    {
+
     }
 
     time++;
