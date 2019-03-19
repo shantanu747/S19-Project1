@@ -14,7 +14,7 @@
 #include <cmath>
 
 #include "process.h"
-#include "functions.h"
+//#include "functions.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ vector<Process> process_helper()
 
   for(int i = 0; i < n; i++)
   {
-    string pid = alphabet[i];
+    string name = to_string(alphabet[i]);
 
     int arrivalTime = -log(drand48())/lambda;
     while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
@@ -63,8 +63,8 @@ vector<Process> process_helper()
     int bursts = floor(drand48()*100);
     bursts += 1;
 
-    Process t = new Process(pid, arrivalTime, burstTime, bursts, ioTime);
-    all_processes
+    Process t(name, arrivalTime, burstTime, bursts, ioTime);
+    all_processes.push_back(t);
   }
   return all_processes;
 }
@@ -123,9 +123,10 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
 
+/*
   vector<Process> processes;
   processes = process_helper();
-  /*
+  cout << processes.size();
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);

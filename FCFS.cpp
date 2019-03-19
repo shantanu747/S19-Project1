@@ -40,6 +40,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
             if(all_processes[i].getArrivalTime() == time){
                 cout << "time " << time << "ms: Process " << all_processes[i].getID() << " arrived and added to ready queue ";
                 readyQ.push_back(all_processes[i]);
+                printQ(readyQ);
             }
 
             //Check to see if i-th process returns from I/O *now*
@@ -49,7 +50,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
                 readyQ.push_back(all_processes[i]);
                 printQ(readyQ);
             }
-            
+
             //Nothing arrives at 'time', continue the loop
             else{
                 continue;
@@ -67,7 +68,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
                 currentProcess.setServiced();
                 serviceQ.push_back(currentProcess);
             }
-            
+
             //Current burst gets sent to IO, CPU use disabled
             else if(currentProcess.getNumBursts() > 0){
                 startNextIO = time + (t_cs/2); //time needed to exit CPU
