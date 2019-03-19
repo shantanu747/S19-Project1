@@ -25,23 +25,23 @@ void srt(vector<Process> p, int n, int t_cs){
     Process currentProcess; //To hold the data for the current bursting process
 
     bool cpuInUse = false; //Set to true only when the CPU is being used
-    unsigned int funcTime = 0; //Total running time (in loop iterations)
-    int startNextProcess = -1; //Next process should start at this time iff there are no preemptions
     bool firstProcessArrived = false;
+    unsigned int time = 0; //Total running time (in loop iterations)
+    int startNextProcess = -1; //Next process should start at this time iff there are no preemptions
+    int makeDecisionTime = -1; //Chooses next process at makeDecisionTime
 
-    cout << "time " << funcTime << "ms: Simulator started for RR ";
+    cout << "time " << time << "ms: Simulator started for SRT ";
     printQ(readyQ);
 
     //Iterates until all processes have been added to serviceQ
     while(serviceQ.size() != all_processes.size()){
 
-        //Iterates over each process to see if there should be
-        //a context switch due to a new process arriving
+        //Iterates over each process to see if anything arrives at this time
         for(int i = 0; i < all_processes.size(); i++){
 
             //Check to see if i-th process arrives *now*
-            if(all_processes[i].getArrivalTime() == funcTime){
-                cout << "time " << funcTime << "ms: Process " << all_processes[i].getID() << " arrived and added to ready queue ";
+            if(all_processes[i].getArrivalTime() == time){
+                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " arrived and added to ready queue ";
                 readyQ.push_back(all_processes[i]);
 
                 //Signifies the first process has arrived
@@ -51,8 +51,27 @@ void srt(vector<Process> p, int n, int t_cs){
                     startNextProcess = readyQ[0].getArrivalTime() + t_cs/2;
                 }
             }
+
+            //Check to see if i-th process returns from I/O *now*
+            else if(all_processes[i].getBlockedUntil() == time){
+                // Check if any processes come back from I/O at this time
+                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " finished I/O and added to ready queue ";
+                readyQ.push_back(all_processes[i]);
+                printQ(readyQ);
+            }
+            
+            //Nothing arrives at 'time', continue the loop
+            else{
+                continue;
+            }
         }
-        funcTime++;
+
+        //Sort the readyQ
+        sort(readyQ.begin(), readyQ.end(), sortHelper);
+
+
+
+        time++;
     }
 
     //******************************//
