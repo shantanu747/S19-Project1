@@ -1,4 +1,7 @@
-/Users/spatil/Documents/GitHub/S19-Project1/main.cpp:12:10: fatal error: 'dequeue' file not found
-#include <dequeue>
-         ^~~~~~~~~
+/Users/spatil/Documents/GitHub/S19-Project1/main.cpp:66:13: error: no viable conversion from 'Process *' to 'Process'
+    Process t = new Process(pid, arrivalTime, burstTime, bursts, ioTime);
+            ^   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/spatil/Documents/GitHub/S19-Project1/process.h:11:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'Process *' to 'const Process &' for 1st argument; dereference the argument with *
+class Process
+      ^
 1 error generated.

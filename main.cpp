@@ -40,7 +40,7 @@ vector<Process> process_helper()
 
   for(int i = 0; i < n; i++)
   {
-    string pid = alphabet[i];
+    string pid = to_string(alphabet[i]);
 
     int arrivalTime = -log(drand48())/lambda;
     while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
@@ -84,6 +84,7 @@ int main(int argc, char const *argv[])
               queue for RR. Optional
   */
 
+/*
   if(argc != 8 || argc != 9)
   {
     std::cerr << "ERROR: Incorrect number of arguments supplied!" << '\n';
@@ -117,11 +118,22 @@ int main(int argc, char const *argv[])
   {
     rradd = "END"; //default behavior
   }
+*/
 
   //uncomment as functions are written and testable
-  /*
+
   vector<Process> processes;
   processes = process_helper();
+  for(int i = 0; i < processes.size(); i++)
+  {
+    string pid = processes[i].getID();
+    int burstTime = processes[i].getBurstTime();
+    int numBursts = processes[i].getNumBursts();
+    int ioTime = processes[i].getIOTime();
+    int ioBursts = processes[i].getIOBursts();
+    cout << pid << " " << burstTime << " " << numBursts << " " << ioTime << " " << ioBursts << endl;
+  }
+  /*
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);
