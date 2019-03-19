@@ -20,12 +20,12 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
     vector<Process> serviceQ; //Finished processes get added here
 
     bool cpuInUse = false; //Set to true only when the CPU is being used
-    bool firstProcessArrived = false;
 
-    int burstEnd = -1;
+    //For keeping track of various important times in the CPU burst process
+    int burstEnd, startNextIO, startNextProcess, returnTime;
 
-    Process currentProcess;
-    Process IOProcess;
+    Process currentProcess; //Holds currently bursting process
+    Process IOProcess; //Holds current process in IO
 
     cout << "time " << time << "ms: Simulator started for FCFS ";
     printQ(readyQ);
@@ -65,8 +65,54 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
             //Process has no more remaining bursts, service the process
             if(currentProcess.getNumBursts()==0){
                 currentProcess.setServiced();
-
+                serviceQ.push_back(currentProcess);
+            }
+            
+            //Current burst gets sent to IO, CPU use disabled
+            else if(currentProcess.getNumBursts() > 0){
+                startNextIO = time + (t_cs/2); //time needed to exit CPU
+                startNextProcess = time + t_cs; //next process starts at this time
+                IOProcess = currentProcess;
+                returnTime = startNextIO + IOProcess.getIOTime();
+                IOProcess.setBlockedUntil(returnTime);
+                IOProcess.addContextSwitch(); //increment context switch count for this process
+                cpuInUse = false; //CPU is not in use anymore
             }
         }
 
+        //CPU ready to accept frontmost process from the readyQ
+        else if(!cpuInUse){
+            currentProcess = readyQ[0];
+            readyQ.erase(readyQ.begin()); //remove the process from the readyQ
+        }
+        //time to put new process into the CPU
+        else if(!cpuInUse && time == startNextProcess){
+            burstEnd = time + currentProcess.getBurstTime();
+            cpuInUse = true; //CPU is now in use
+            cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU ";
+            printQ(readyQ);
+        }
+
+        //output message saying process is now in IO
+        if(time == startNextIO){
+            cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
+            printQ(readyQ);
+        }
+        time++;
+    }
+
+    //******************************//
+    // END OF FUNCTION CALCULATIONS //
+    //******************************//
+
+    // calculations for avg algorithm stats
+    float total_turn_around_time = 0;
+    float total_burst_times = 0;
+    float total_wait_time = 0;
+
+    int context_switches = 0;
+
+    float avg_tat = 0.0; // average turn around time
+    float avg_bt = 0.0; // average burst time
+    float avg_wt = 0.0; // average wait time
 }
