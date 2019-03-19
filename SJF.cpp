@@ -20,6 +20,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
   int startNextIO = -1;
+  int decisionTime = -1;
   int numProcesses = n;
   bool cpu_in_use = false; // only set to true while process in CPU
   unsigned int time = 0; // overall timer for simulation
@@ -61,6 +62,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
     if(cpuInUse && time == burstEnd)
     {
       cout << "time " << time << "ms: Process " << currentProcess.getID() << " completed a CPU burst ";
+      printQ(readyQ);
       currentProcess.decreaseCPUBursts();
       if(currentProcess.getNumBursts()==0)
       {
@@ -71,27 +73,38 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
       else if(currentProcess.getNumBursts() > 0)
       {
         //IO needed
-        startNextIO = time + (t_cs/2);
-        startNextProcess = time + t_cs;
+        startNextIO = time + (t_cs/2); //time needed to exit CPU
+        decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
+        startNextProcess = time + t_cs; //next process starts at this time
         IOProcess = currentProcess;
         int returnTime = startNextIO + IOProcess.getIOTime();
         IOProcess.setBlockedUntil(returnTime);
         IOProcess.addContextSwitch(); //increment context switch count for this process
-        cpuInUse = false;
+        cpuInUse = false; //CPU is not in use anymore
       }
     }
+
+    else if(!cpuInUse && time == decisionTime)
+    {
+      currentProcess = readyQ[0]; //shortest process at decisionTime is the one we load into the CPU
+      readyQ.erase(readyQ.begin()); //remove the process from the readyQ
+    }
+
     //time to put new process into the CPU
     else if(!cpuInUse && time == startNextProcess)
     {
-      currentProcess = readyQ[0];
-
+      burstEnd = time + currentProcess.getBurstTime();
+      cpuInUse = true; //CPU is now in use
+      cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU ";
+      printQ(readyQ);
     }
 
+    //output message saying process is now in IO
     if(time == startNextIO)
     {
-
+      cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
+      printQ(readyQ);
     }
-
     time++;
   }
 
