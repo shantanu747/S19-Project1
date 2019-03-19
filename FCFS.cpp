@@ -84,9 +84,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
         else if(!cpuInUse){
             currentProcess = readyQ[0];
             readyQ.erase(readyQ.begin()); //remove the process from the readyQ
-        }
-        //time to put new process into the CPU
-        else if(!cpuInUse && time == startNextProcess){
+
             burstEnd = time + currentProcess.getBurstTime();
             cpuInUse = true; //CPU is now in use
             cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU ";
