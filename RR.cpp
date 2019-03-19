@@ -20,12 +20,13 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     int t_cs = switch_time; // takes this much time to make a context switch
     int t_slice = tslice; // time slice for RR algorithm
-    bool cpu_in_use = false; // only set to true while process in CPU
+    bool cpuInUse = false; // only set to true while process in CPU
     bool firstProcessArrived = false;
     //bool cpu_blocked = false; //block during context switch
     string rradd = behavior; //BEGINNING OR END
     unsigned int time = 0; // overall timer for simulation
     int startNextProcess = -1; // By default first process should not start before this time
+    int decisionTime = -1; //next process to load in chose at t_cs/2 after the last process finishes
     int burst_end = -1; // acts as marker for when next context switch/preemption should occur
 
     deque<Process> readyQ;
@@ -82,7 +83,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
         }
 
         //CPU currently in use but there is an event that needs handling
-        if(cpu_in_use && time == burst_end)
+        if(cpuInUse && time == burst_end)
         {
           //no context switch required
           if(readyQ.size() == 0)
@@ -104,6 +105,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               int difference
             }
           }
+
           //context switch is required
           else
           {
@@ -115,9 +117,10 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 //process just finished CPU burst, has no more CPU or IO bursts remaining
                 //process is serviced
                 currentProcess.setServiced();
+                currentProcess.addContextSwitch();
                 serviceQ.push_back(currentProcess);
                 startNextProcess = time + t_cs;
-                cpu_in_use = false;
+                cpuInUse = false;
               }
             }
             //current process needs more CPU time before IO
@@ -133,7 +136,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               {
                 readyQ.push_back(currentProcess)
               }
-              cpu_in_use = false;
+              cpuInUse = false;
               startNextProcess = time + t_cs;
             }
           }
@@ -141,11 +144,16 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           //let current CPU burst continue
         }
 
-        //CPU not in use, it's time to load in a new process, and readyQ is not empty
-        else if(cpu_in_use == false && time == startNextProcess && readyQ.size() != 0)
+        //cpu not in use since last burst ended, decide next process to start loading in
+        else if(cpuInUse == false && time == decisionTime && readyQ.size() != 0)
         {
+          //assign this as our current process to start loading in
           currentProcess = readyQ[0];
           readyQ.erase(readyQ.begin());
+        }
+        //CPU not in use, it's time to load in a new process, and readyQ is not empty
+        else if(cpuInUse == false && time == startNextProcess)
+        {
           //burst will finish before or at the same time that timeslice expires
           if(currentProcess.getRemainingTimeInBurst() <= t_slice)
           {
@@ -159,7 +167,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             int difference = currentProcess.getRemainingTimeInBurst() - t_slice;
             currentProcess.setRemainingTimeInBurst(difference);
           }
-          cpu_in_use = true;
+          cpuInUse = true;
         }
         time ++ ;
     }

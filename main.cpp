@@ -11,6 +11,7 @@
 #include <sstream>
 #include <deque>
 #include <cassert>
+#include <cmath>
 
 #include "process.h"
 #include "functions.h"
@@ -22,6 +23,12 @@ using namespace std;
 // call next simulation
 vector<Process> process_helper()
 {
+  long int seed = 777;
+  srand(seed);
+  string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  float lambda = 0.01;
+  int upperBound = 3000;
+  int n = 26;
   vector<Process> all_processes;
   /* Code to create processes and assign:
       - arrival time
@@ -30,6 +37,35 @@ vector<Process> process_helper()
       - io burst time
       Goes here
   */
+
+  for(int i = 0; i < n; i++)
+  {
+    string pid = alphabet[i];
+
+    int arrivalTime = -log(drand48())/lambda;
+    while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
+    {
+      arrivalTime = -log(drand48())/lambda;
+    }
+
+    int ioTime = -log(drand48())/lambda;
+    while(ioTime > upperBound) //if above upper bound keep recalculating until it is within range
+    {
+      ioTime = -log(drand48())/lambda;
+    }
+
+    int burstTime = -log(drand48())/lambda;
+    while(burstTime > upperBound) //if above upper bound keep recalculating until it is within range
+    {
+      burstTime = -log(drand48())/lambda;
+    }
+
+    int bursts = floor(drand48()*100);
+    bursts += 1;
+
+    Process t = new Process(pid, arrivalTime, burstTime, bursts, ioTime);
+    all_processes.push_back(t);
+  }
   return all_processes;
 }
 
@@ -54,11 +90,22 @@ int main(int argc, char const *argv[])
     return 1;
   }
 
-  int seed = atoi(argv[1]);
+  //int seed = atoi(argv[1]);
   int lambda = atoi(argv[2]);
   int upper_bound = atoi(argv[3]);
   int n = atoi(argv[4]);
+
+  if(n > 26) //more processes than we were told to expect
+  {
+    cerr << "ERROR: No more than 26 processes accepted!" << '\n';
+  }
+
   int t_cs = atoi(argv[5]);
+
+  if((t_cs%2) != 0) //t_cs needs to be an even number
+  {
+    cerr << "ERROR: t_cs needs to be an even integer!" << '\n';
+  }
   int alpha = atoi(argv[6]);
   int timeslice = atoi(argv[7]);
   string rradd;

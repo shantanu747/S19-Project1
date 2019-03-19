@@ -68,6 +68,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
       {
         //process is finished, no need for IO
         currentProcess.setServiced();
+        serviceQ.push_back(currentProcess);
         startNextProcess = time + t_cs;
       }
       else if(currentProcess.getNumBursts() > 0)
