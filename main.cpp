@@ -63,7 +63,7 @@ vector<Process> process_helper()
     int bursts = floor(drand48()*100);
     bursts += 1;
 
-    Process t = new Process(pid, arrivalTime, burstTime, bursts, ioTime);
+    Process t(pid, arrivalTime, burstTime, bursts, ioTime);
     all_processes.push_back(t);
   }
   return all_processes;
