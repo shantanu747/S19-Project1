@@ -84,6 +84,8 @@ int main(int argc, char const *argv[])
               queue for RR. Optional
   */
 
+  /*
+
   if(argc != 8 || argc != 9)
   {
     std::cerr << "ERROR: Incorrect number of arguments supplied!" << '\n';
@@ -117,11 +119,13 @@ int main(int argc, char const *argv[])
   {
     rradd = "END"; //default behavior
   }
+  */
 
   //uncomment as functions are written and testable
-  /*
+
   vector<Process> processes;
   processes = process_helper();
+  /*
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);
