@@ -30,14 +30,7 @@ vector<Process> process_helper()
   int upperBound = 3000;
   int n = 26;
   vector<Process> all_processes;
-  /* Code to create processes and assign:
-      - arrival time
-      - cpu time per busrt
-      - number of bursts
-      - io burst time
-      Goes here
-  */
-
+  
   for(int i = 0; i < n; i++)
   {
     string name = to_string(alphabet[i]);

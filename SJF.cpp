@@ -78,8 +78,6 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
         decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
         startNextProcess = time + t_cs; //next process starts at this time
         IOProcess = currentProcess;
-        int returnTime = startNextIO + IOProcess.getIOTime();
-        IOProcess.setBlockedUntil(returnTime);
         IOProcess.addContextSwitch(); //increment context switch count for this process
         cpuInUse = false; //CPU is not in use anymore
       }
@@ -103,6 +101,8 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
     //output message saying process is now in IO
     if(time == startNextIO)
     {
+      int returnTime = startNextIO + IOProcess.getIOTime();
+      IOProcess.setBlockedUntil(returnTime);
       cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
       printQ(readyQ);
     }

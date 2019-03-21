@@ -82,7 +82,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
         }
 
         //CPU ready to accept frontmost process from the readyQ
-        else if(!cpuInUse){
+        else if(!cpuInUse && time == startNextProcess){
             currentProcess = readyQ[0];
             readyQ.erase(readyQ.begin()); //remove the process from the readyQ
 
