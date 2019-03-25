@@ -22,7 +22,7 @@ vector<Process> process_helper()
 {
   long int seed = 777;
   srand48(seed);
-  string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  char* alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   float lambda = 0.01;
   int upperBound = 3000;
   int n = 6;
@@ -31,7 +31,7 @@ vector<Process> process_helper()
 
   for(int i = 0; i < n; i++)
   {
-    string name = to_string(alphabet[i]);
+    char name = *(alphabet[i]);
 
     int arrivalTime = -log(drand48())/lambda;
     while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
@@ -87,7 +87,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     deque<Process> serviceQ;
 
     // Begin algorithm simulation
-    cout << "time " << time << "ms: Simulator started for RR ";
+    cout << "time " << time << "ms: Simulator started for RR " << endl;
     /*
     printQ_RR(readyQ);
 
@@ -314,7 +314,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   }
 
   // Begin algorithm simulation
-  cout << "time " << time << "ms: Simulator started for SJF ";
+  cout << "time " << time << "ms: Simulator started for SJF " << endl;
   /*
   printQ(readyQ);
 
@@ -428,7 +428,7 @@ void SRT(vector<Process> p, int n, int t_cs){
       cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
     }
 
-    cout << "time " << time << "ms: Simulator started for SRT ";
+    cout << "time " << time << "ms: Simulator started for SRT " << endl;
     /*
     printQ(readyQ);
 
@@ -514,7 +514,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
       cout << "Process " << all_processes[i].getID() << " [NEW] (arrival time " << all_processes[i].getArrivalTime() << " ms) " << all_processes[i].getNumBursts() << " CPU bursts" << endl;
     }
 
-    cout << "time " << time << "ms: Simulator started for FCFS ";
+    cout << "time " << time << "ms: Simulator started for FCFS " << endl;
     /*
     printQ(readyQ);
 
