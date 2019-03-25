@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void printQ_SJF_SJF(vector<Process> &all)
+void printQ_SJF(vector<Process> &all)
 {
     if (all.size() == 0)
     {
