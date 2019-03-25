@@ -155,7 +155,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               }
               else
               {
-                readyQ.push_back(currentProcess)
+                readyQ.push_back(currentProcess);
               }
             }
             decisionTime = time + (t_cs/2);
@@ -224,6 +224,5 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     avg_tat = total_turn_around_time / float(context_switches);
     avg_bt = total_burst_times / float(context_switches);
     avg_wt = total_wait_time / float(context_switches);
-    file_writer(avg_bt, avg_wt, avg_tat, context_switches, preemptions, fname, "RR");
 
 }
