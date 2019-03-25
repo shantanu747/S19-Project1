@@ -11,25 +11,6 @@
 
 using namespace std;
 
-void printQ(vector<Process> &all)
-{
-    if (all.size() == 0)
-    {
-        cout << "[Q <empty>]" << endl;
-        return;
-    }
-    string q;
-    q += "[Q ";
-    for (int i = 0; i < all.size(); i++)
-    {
-        q += all[i].getID();
-        q += " ";
-    }
-    //q.pop_back();
-    q += "]";
-    cout << q << endl;
-}
-
 bool sortHelper_SJF(Process a, Process b)
 {
   return (a.getBurstTime() < b.getBurstTime());
