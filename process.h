@@ -15,7 +15,7 @@ public:
     Process(char gid, int arrival, int burst, int bcount, int io, float lambda);
 
     //Accessors
-    char getID() const;
+    char getID() const; 
     int getArrivalTime() const;
     int getBurstTime() const;
     int getNumBursts() const;
@@ -28,7 +28,6 @@ public:
     int getWaitTime() const;
     int getPreemptedCount() const;
     int getTau() const;
-    bool sortHelper(Process a, Process b);
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
@@ -41,8 +40,6 @@ public:
     void setWaitTime(int w);
     void addPreemptedCount();
     void setTau(int t);
-    void printQ(vector<Process> &all);
-    void printQ_RR(deque<Process> &all);
 
 private:
     char pid;
