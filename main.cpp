@@ -115,10 +115,11 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
 
-/*
+
   vector<Process> processes;
   processes = process_helper();
-  cout << processes.size();
+  cout << processes.size() << endl;
+  /*
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);
