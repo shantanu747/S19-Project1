@@ -186,3 +186,9 @@ void Process::printQ(vector<Process> &all)
     q += "]";
     cout << q << endl;
 }
+
+//std::sort optional 3rd argument for sorting by remaining time in burst
+bool sortHelper(Process a, Process b)
+{
+  return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
+}
