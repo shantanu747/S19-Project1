@@ -14,7 +14,6 @@ using namespace std;
 
 Process::Process() // default constructor
 {
-    pid = "";
     arrivalTime = 0;
     burstTime = 0;
     numBursts =  0;
