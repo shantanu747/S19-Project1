@@ -15,6 +15,49 @@
 
 using namespace std;
 
+
+void printQ(vector<Process> &all)
+{
+    if (all.size() == 0)
+    {
+        cout << "[Q <empty>]" << endl;
+        return;
+    }
+    string q;
+    q += "[Q ";
+    for (int i = 0; i < all.size(); i++)
+    {
+        q += all[i].getID();
+        q += " ";
+    }
+    //q.pop_back();
+    q += "]";
+    cout << q << endl;
+}
+
+//std::sort optional 3rd argument for sorting by remaining time in burst
+bool sortHelper(Process a, Process b)
+{
+  return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
+}
+
+void printQ_RR(deque<Process> &all)
+{
+    if (all.size() == 0)
+    {
+        cout << "[Q <empty>]" << endl;
+        return;
+    }
+    string queue = "[Q ";
+    for (int i = 0; i < all.size(); i++)
+    {
+        queue += all[i].getID();
+        queue += " ";
+    }
+    queue += "]";
+    cout << queue << endl;
+}
+
 // after each simulation algorithm ends, we regenerate vector<Process>
 // with new burst times, burst count, io times
 // call next simulation
@@ -515,7 +558,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
     }
 
     cout << "time " << time << "ms: Simulator started for FCFS " << endl;
-    /*
+
     printQ(readyQ);
 
     //Iterates until all processes have been added to serviceQ
@@ -588,7 +631,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
         time++;
     }
 
-    */
+
 
     //******************************//
     // END OF FUNCTION CALCULATIONS //
@@ -666,13 +709,13 @@ int main(int argc, char const *argv[])
 
   vector<Process> processes;
   processes = process_helper();
-  cout << processes.size() << endl;
-  SJF(processes, n, t_cs);
-  processes = process_helper();
-  SRT(processes, n, t_cs);
-  processes = process_helper();
+  //cout << processes.size() << endl;
+  //SJF(processes, n, t_cs);
+  //processes = process_helper();
+  //SRT(processes, n, t_cs);
+  //processes = process_helper();
   FCFS(processes, n, t_cs);
-  processes = process_helper();
-  RR(processes, n, t_cs, timeslice, rradd);
+  //processes = process_helper();
+  //RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }
