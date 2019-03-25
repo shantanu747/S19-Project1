@@ -100,6 +100,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 //process has finished executing, setServiced
                 currentProcess.setServiced();
                 serviceQ.push_back(currentProcess);
+                currentProcess.addContextSwitch();
                 decisionTime = time + (t_cs/2); //chose next process at this time
                 startNextProcess = time + t_cs;
               }
