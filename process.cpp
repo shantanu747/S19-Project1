@@ -52,7 +52,7 @@ Process::Process(string gid, int arrival, int burst, int bcount, int io, float l
 }
 
 // ACCESSORS
-string Process::getID() const
+char Process::getID() const
 {
     return pid;
 }

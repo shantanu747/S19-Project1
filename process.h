@@ -15,7 +15,7 @@ public:
     Process(string gid, int arrival, int burst, int bcount, int io, float lambda);
 
     //Accessors
-    string getID() const;
+    char getID() const;
     int getArrivalTime() const;
     int getBurstTime() const;
     int getNumBursts() const;
@@ -45,7 +45,7 @@ public:
     void printQ_RR(deque<Process> &all);
 
 private:
-    string pid;
+    char pid;
     int arrivalTime;
     int burstTime; //how long each burst lasts
     int numBursts; //number of CPU bursts
