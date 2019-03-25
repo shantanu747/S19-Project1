@@ -22,7 +22,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   int startNextIO = -1;
   int decisionTime = -1;
   int numProcesses = n;
-  bool cpu_in_use = false; // only set to true while process in CPU
+  bool cpuInUse = false; // only set to true while process in CPU
   unsigned int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int burstEnd = -1;
