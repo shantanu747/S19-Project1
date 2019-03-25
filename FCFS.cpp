@@ -6,6 +6,7 @@
 #include <deque>
 #include <iomanip>
 #include <algorithm>
+
 #include "process.h"
 #include "functions.h"
 
@@ -44,7 +45,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
 
             //Check to see if i-th process arrives *now*
             if(all_processes[i].getArrivalTime() == time){
-                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " arrived and added to ready queue ";
+                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " arrived; added to ready queue ";
                 readyQ.push_back(all_processes[i]);
                 printQ(readyQ);
             }
@@ -52,7 +53,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
             //Check to see if i-th process returns from I/O *now*
             else if(all_processes[i].getBlockedUntil() == time){
                 // Check if any processes come back from I/O at this time
-                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " finished I/O and added to ready queue ";
+                cout << "time " << time << "ms: Process " << all_processes[i].getID() << " completed I/O; added to ready queue ";
                 readyQ.push_back(all_processes[i]);
                 printQ(readyQ);
             }
@@ -94,13 +95,13 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
 
             burstEnd = time + currentProcess.getBurstTime();
             cpuInUse = true; //CPU is now in use
-            cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU ";
+            cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU for " << currentProcess.getBurstTime() << "ms burst ";
             printQ(readyQ);
         }
 
         //output message saying process is now in IO
         if(time == startNextIO){
-            cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
+            cout << "time " << time << "ms: Process " << IOProcess.getID() << " switching out of CPU; will block on I/O until time " << IOProcess.getBlockedUntil() << "ms ";
             printQ(readyQ);
         }
         time++;

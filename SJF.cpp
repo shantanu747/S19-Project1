@@ -6,6 +6,7 @@
 #include <deque>
 #include <iomanip>
 #include <algorithm>
+
 #include "process.h"
 #include "functions.h"
 
@@ -100,7 +101,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
     {
       burstEnd = time + currentProcess.getBurstTime();
       cpuInUse = true; //CPU is now in use
-      cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU ";
+      cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU for " << currentProcess.getBurstTime() << "ms burst ";
       printQ(readyQ);
     }
 
