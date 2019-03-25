@@ -1,6 +1,4 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <cstring>
@@ -13,7 +11,7 @@
 #include <cassert>
 #include <cmath>
 
-#include "process.h"
+//#include "process.h"
 #include "RR.cpp"
 #include "SJF.cpp"
 #include "SRT.cpp"
