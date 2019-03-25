@@ -12,10 +12,6 @@
 using namespace std;
 
 //std::sort optional 3rd argument for sorting by remaining time in burst
-bool sortHelper_SRT(Process a, Process b)
-{
-  return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
-}
 
     //Process list | num of processes | context switch time
 void SRT(vector<Process> p, int n, int t_cs){
@@ -75,7 +71,7 @@ void SRT(vector<Process> p, int n, int t_cs){
         }
 
         //Sort the readyQ
-        sort(readyQ.begin(), readyQ.end(), sortHelper_SRT);
+        sort(readyQ.begin(), readyQ.end(), sortHelper);
 
 
 
