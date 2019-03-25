@@ -15,7 +15,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     deque<Process> all_p;
     for(int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
-      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl; 
+      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
       all_p.push_back(p[i]);
     }
 
