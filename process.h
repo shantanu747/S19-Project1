@@ -12,7 +12,7 @@ class Process
 {
 public:
     Process();
-    Process(string gid, int arrival, int burst, int bcount, int io);
+    Process(string gid, int arrival, int burst, int bcount, int io, int lambda);
 
     //Accessors
     string getID() const;
@@ -27,6 +27,7 @@ public:
     int getContextSwitchCount() const;
     int getWaitTime() const;
     int getPreemptedCount() const;
+    int getTau() const;
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
@@ -38,6 +39,7 @@ public:
     void addContextSwitch();
     void setWaitTime(int w);
     void addPreemptedCount();
+    void setTau(int t);
 
 private:
     string pid;
@@ -49,6 +51,7 @@ private:
     int timeInIO; // total time spent in IO
     int cpuTime; // total time in CPU
     int blockedUntil;
+    int tau;
     bool serviced;
 
     int turnaroundTime;

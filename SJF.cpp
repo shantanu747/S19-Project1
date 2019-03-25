@@ -32,6 +32,12 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   Process currentProcess;
   Process IOProcess;
 
+  //Initial output
+  for(int i = 0; i < all_p.size(); i++)
+  {
+    cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
+  }
+
   // Begin algorithm simulation
   cout << "time " << time << "ms: Simulator started for SJF ";
   printQ(readyQ);

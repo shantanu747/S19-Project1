@@ -24,7 +24,7 @@ Process::Process() // default constructor
     contextSwitchCount = 0;
 }
 
-Process::Process(string gid, int arrival, int burst, int bcount, int io)
+Process::Process(string gid, int arrival, int burst, int bcount, int io, int lambda)
 {
     pid = gid;
     arrivalTime = arrival;
@@ -41,6 +41,7 @@ Process::Process(string gid, int arrival, int burst, int bcount, int io)
     timeRemainingInBurst = burst;
     preemptedCount = 0;
     contextSwitchCount = 0;
+    tau = 1/lambda;
 }
 
 // ACCESSORS
@@ -104,6 +105,11 @@ int Process::getPreemptedCount() const
   return preemptedCount;
 }
 
+int Process::getTau() const
+{
+  return tau;
+}
+
 //MODIFIERS
 void Process::setBlockedUntil(int b)
 {
@@ -148,4 +154,9 @@ void Process::setWaitTime(int w)
 void Process::addPreemptedCount()
 {
   preemptedCount += 1;
+}
+
+void Process::setTau(int t)
+{
+  tau = t;
 }

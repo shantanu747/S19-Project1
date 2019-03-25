@@ -30,6 +30,12 @@ void srt(vector<Process> p, int n, int t_cs){
     int startNextProcess = -1; //Next process should start at this time iff there are no preemptions
     int makeDecisionTime = -1; //Chooses next process at makeDecisionTime
 
+    //Initial output
+    for(int i = 0; i < all_p.size(); i++)
+    {
+      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
+    }
+
     cout << "time " << time << "ms: Simulator started for SRT ";
     printQ(readyQ);
 
@@ -59,7 +65,7 @@ void srt(vector<Process> p, int n, int t_cs){
                 readyQ.push_back(all_processes[i]);
                 printQ(readyQ);
             }
-            
+
             //Nothing arrives at 'time', continue the loop
             else{
                 continue;
