@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void printQ(deque<Process> &all)
+void printQ_RR(deque<Process> &all)
 {
     if (all.size() == 0)
     {
@@ -58,7 +58,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     // Begin algorithm simulation
     cout << "time " << time << "ms: Simulator started for RR ";
-    printQ(readyQ);
+    printQ_RR(readyQ);
 
     // while not all processes have been serviced
     while (serviceQ.size() != all_p.size())
@@ -86,7 +86,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                   firstProcessArrived = true;
                   startNextProcess = time + (t_cs/2); //first process just arrived, start loading into CPU and start executing at t_cs/2
                 }
-                printQ(readyQ);
+                printQ_RR(readyQ);
             }
             // Check if any processes come back from I/O at this time
             else if(all_p[i].getBlockedUntil() == time)
@@ -101,7 +101,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               {
                 readyQ.push_back(all_p[i]);
               }
-              printQ(readyQ);
+              printQ_RR(readyQ);
             }
         }
 
@@ -220,7 +220,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           int returnTime = time + IOProcess.getIOTime();
           IOProcess.setBlockedUntil(returnTime);
           cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
-          printQ(readyQ);
+          printQ_RR(readyQ);
         }
 
         if(!cpuInUse && startNextProcess < time && readyQ.size()>0)

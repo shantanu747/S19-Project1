@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void printQ(vector<Process> &all)
+void printQ_SRT(vector<Process> &all)
 {
     if (all.size() == 0)
     {
@@ -56,7 +56,7 @@ void srt(vector<Process> p, int n, int t_cs){
     }
 
     cout << "time " << time << "ms: Simulator started for SRT ";
-    printQ(readyQ);
+    printQ_SRT(readyQ);
 
     //Iterates until all processes have been added to serviceQ
     while(serviceQ.size() != all_processes.size()){
@@ -82,7 +82,7 @@ void srt(vector<Process> p, int n, int t_cs){
                 // Check if any processes come back from I/O at this time
                 cout << "time " << time << "ms: Process " << all_processes[i].getID() << " finished I/O and added to ready queue ";
                 readyQ.push_back(all_processes[i]);
-                printQ(readyQ);
+                printQ_SRT(readyQ);
             }
 
             //Nothing arrives at 'time', continue the loop
