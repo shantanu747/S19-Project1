@@ -11,23 +11,6 @@
 
 using namespace std;
 
-void printQ_RR(deque<Process> &all)
-{
-    if (all.size() == 0)
-    {
-        cout << "[Q <empty>]" << endl;
-        return;
-    }
-    string queue = "[Q ";
-    for (int i = 0; i < all.size(); i++)
-    {
-        queue += all[i].getID();
-        queue += " ";
-    }
-    queue += "]";
-    cout << queue << endl;
-}
-
 void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 {
     deque<Process> all_p;

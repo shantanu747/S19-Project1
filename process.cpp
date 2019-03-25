@@ -192,3 +192,20 @@ bool sortHelper(Process a, Process b)
 {
   return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
 }
+
+void printQ_RR(deque<Process> &all)
+{
+    if (all.size() == 0)
+    {
+        cout << "[Q <empty>]" << endl;
+        return;
+    }
+    string queue = "[Q ";
+    for (int i = 0; i < all.size(); i++)
+    {
+        queue += all[i].getID();
+        queue += " ";
+    }
+    queue += "]";
+    cout << queue << endl;
+}

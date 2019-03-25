@@ -42,6 +42,7 @@ public:
     void addPreemptedCount();
     void setTau(int t);
     void printQ(vector<Process> &all);
+    void printQ_RR(deque<Process> &all);
 
 private:
     string pid;
