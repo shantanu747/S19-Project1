@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void printQ_SJF(vector<Process> &all)
+void printQ(vector<Process> &all)
 {
     if (all.size() == 0)
     {
@@ -60,7 +60,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   // Begin algorithm simulation
   cout << "time " << time << "ms: Simulator started for SJF ";
   /*
-  printQ_SJF(readyQ);
+  printQ(readyQ);
 
   while(serviceQ.size() != numProcesses)
   {
@@ -72,14 +72,14 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       {
         readyQ.push_back(all_p[i]);
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived and added to ready queue ";
-        printQ_SJF(readyQ);
+        printQ(readyQ);
       }
       else if(time == all_p[i].getBlockedUntil())
       {
         readyQ.push_back(all_p[i]);
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
         all_p[i].decreaseIOBursts(); //another IO burst finished, decrement counter for remaining bursts
-        printQ_SJF(readyQ);
+        printQ(readyQ);
       }
     }
     sort(readyQ.begin(), readyQ.end(), sortHelper_SJF); //sorts readyQ by shortest burst time required
@@ -88,7 +88,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
     if(cpuInUse && time == burstEnd)
     {
       cout << "time " << time << "ms: Process " << currentProcess.getID() << " completed a CPU burst ";
-      printQ_SJF(readyQ);
+      printQ(readyQ);
       currentProcess.decreaseCPUBursts();
       if(currentProcess.getNumBursts()==0)
       {
@@ -121,7 +121,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       burstEnd = time + currentProcess.getBurstTime();
       cpuInUse = true; //CPU is now in use
       cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU for " << currentProcess.getBurstTime() << "ms burst ";
-      printQ_SJF(readyQ);
+      printQ(readyQ);
     }
 
     //output message saying process is now in IO
@@ -130,7 +130,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       int returnTime = startNextIO + IOProcess.getIOTime();
       IOProcess.setBlockedUntil(returnTime);
       cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
-      printQ_SJF(readyQ);
+      printQ(readyQ);
     }
     time++;
   }

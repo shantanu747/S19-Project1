@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void printQ_FCFS(vector<Process> &all)
+void printQ(vector<Process> &all)
 {
     if (all.size() == 0)
     {
@@ -55,7 +55,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
 
     cout << "time " << time << "ms: Simulator started for FCFS ";
     /*
-    printQ_FCFS(readyQ);
+    printQ(readyQ);
 
     //Iterates until all processes have been added to serviceQ
     while(serviceQ.size() != all_processes.size()){
@@ -67,7 +67,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
             if(all_processes[i].getArrivalTime() == time){
                 cout << "time " << time << "ms: Process " << all_processes[i].getID() << " arrived; added to ready queue ";
                 readyQ.push_back(all_processes[i]);
-                printQ_FCFS(readyQ);
+                printQ(readyQ);
             }
 
             //Check to see if i-th process returns from I/O *now*
@@ -75,7 +75,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
                 // Check if any processes come back from I/O at this time
                 cout << "time " << time << "ms: Process " << all_processes[i].getID() << " completed I/O; added to ready queue ";
                 readyQ.push_back(all_processes[i]);
-                printQ_FCFS(readyQ);
+                printQ(readyQ);
             }
 
             //Nothing arrives at 'time', continue the loop
@@ -87,7 +87,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
         //Current CPU Burst ended, send process to IO
         if(cpuInUse && burstEnd == time){
             cout << "time " << time << "ms: Process " << currentProcess.getID() << " completed a CPU burst ";
-            printQ_FCFS(readyQ);
+            printQ(readyQ);
             currentProcess.decreaseCPUBursts();
 
             //Process has no more remaining bursts, service the process
@@ -116,13 +116,13 @@ void FCFS(vector<Process> all_p, int n, int switch_time)
             burstEnd = time + currentProcess.getBurstTime();
             cpuInUse = true; //CPU is now in use
             cout << "time " << time << "ms: Process " << currentProcess.getID() << " started using the CPU for " << currentProcess.getBurstTime() << "ms burst ";
-            printQ_FCFS(readyQ);
+            printQ(readyQ);
         }
 
         //output message saying process is now in IO
         if(time == startNextIO){
             cout << "time " << time << "ms: Process " << IOProcess.getID() << " switching out of CPU; will block on I/O until time " << IOProcess.getBlockedUntil() << "ms ";
-            printQ_FCFS(readyQ);
+            printQ(readyQ);
         }
         time++;
     }
