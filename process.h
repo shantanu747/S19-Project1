@@ -40,6 +40,7 @@ public:
     void setWaitTime(int w);
     void addPreemptedCount();
     void setTau(int t);
+    void printQ(vector<Process> &all);
 
 private:
     string pid;
