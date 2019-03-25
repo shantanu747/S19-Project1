@@ -30,7 +30,7 @@ void printQ_SJF(vector<Process> &all)
     cout << q << endl;
 }
 
-bool sortHelper(Process a, Process b)
+bool sortHelper_SJF(Process a, Process b)
 {
   return (a.getBurstTime() < b.getBurstTime());
 }
@@ -81,7 +81,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
         printQ_SJF(readyQ);
       }
     }
-    sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
+    sort(readyQ.begin(), readyQ.end(), sortHelper_SJF); //sorts readyQ by shortest burst time required
 
     //burst ended, send to IO, reassign current process
     if(cpuInUse && time == burstEnd)

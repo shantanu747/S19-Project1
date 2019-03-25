@@ -31,7 +31,7 @@ void printQ_SRT(vector<Process> &all)
 }
 
 //std::sort optional 3rd argument for sorting by remaining time in burst
-bool sortHelper(Process a, Process b){
+bool sortHelper_SRT(Process a, Process b){
   return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
 }
 
@@ -92,7 +92,7 @@ void srt(vector<Process> p, int n, int t_cs){
         }
 
         //Sort the readyQ
-        sort(readyQ.begin(), readyQ.end(), sortHelper);
+        sort(readyQ.begin(), readyQ.end(), sortHelper_SRT);
 
 
 
