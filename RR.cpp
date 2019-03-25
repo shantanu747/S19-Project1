@@ -252,7 +252,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     {
 
     }
-    
+
     cout <<"time " << time+2 << "ms: Simulator ended for RR" ;
 
     avg_tat = total_turn_around_time / float(context_switches);

@@ -123,6 +123,7 @@ int main(int argc, char const *argv[])
   */
 
   //uncomment as functions are written and testable
+  /*
 
   int n = 6;
   int t_cs = 8;
@@ -139,6 +140,6 @@ int main(int argc, char const *argv[])
   FCFS(processes, n, t_cs);
   processes = process_helper();
   RR(processes, n, t_cs, timeslice, rradd);
-
+*/
   return 0;
 }
