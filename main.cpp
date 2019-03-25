@@ -26,7 +26,7 @@ vector<Process> process_helper()
   float lambda = 0.01;
   int upperBound = 3000;
   int n = 6;
-  //double container;
+
   vector<Process> all_processes;
 
   for(int i = 0; i < n; i++)
