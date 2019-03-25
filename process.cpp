@@ -24,7 +24,7 @@ Process::Process() // default constructor
     contextSwitchCount = 0;
 }
 
-Process::Process(string gid, int arrival, int burst, int bcount, int io, int lambda)
+Process::Process(string gid, int arrival, int burst, int bcount, int io, float lambda)
 {
     pid = gid;
     arrivalTime = arrival;

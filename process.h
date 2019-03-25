@@ -12,7 +12,7 @@ class Process
 {
 public:
     Process();
-    Process(string gid, int arrival, int burst, int bcount, int io, int lambda);
+    Process(string gid, int arrival, int burst, int bcount, int io, float lambda);
 
     //Accessors
     string getID() const;

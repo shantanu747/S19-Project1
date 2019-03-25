@@ -28,29 +28,33 @@ vector<Process> process_helper()
   float lambda = 0.01;
   int upperBound = 3000;
   int n = 26;
+  double container;
   vector<Process> all_processes;
 
   for(int i = 0; i < n; i++)
   {
     string name = to_string(alphabet[i]);
 
-    int arrivalTime = -log(drand48())/lambda;
-    while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
+    container = -log(drand48())/lambda;
+    while(container > upperBound) //if above upper bound keep recalculating until it is within range
     {
-      arrivalTime = -log(drand48())/lambda;
+      container = -log(drand48())/lambda;
     }
+    int arrivalTime = container;
 
-    int ioTime = -log(drand48())/lambda;
-    while(ioTime > upperBound) //if above upper bound keep recalculating until it is within range
+    container = -log(drand48())/lambda;
+    while(container > upperBound) //if above upper bound keep recalculating until it is within range
     {
-      ioTime = -log(drand48())/lambda;
+      container = -log(drand48())/lambda;
     }
+    int ioTime = container;
 
-    int burstTime = -log(drand48())/lambda;
-    while(burstTime > upperBound) //if above upper bound keep recalculating until it is within range
+    container = -log(drand48())/lambda;
+    while(container > upperBound) //if above upper bound keep recalculating until it is within range
     {
-      burstTime = -log(drand48())/lambda;
+      container = -log(drand48())/lambda;
     }
+    int burstTime = container;
 
     int bursts = floor(drand48()*100);
     bursts += 1;
