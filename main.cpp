@@ -22,7 +22,7 @@ vector<Process> process_helper()
 {
   long int seed = 777;
   srand48(seed);
-  char* alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   float lambda = 0.01;
   int upperBound = 3000;
   int n = 6;
@@ -31,7 +31,7 @@ vector<Process> process_helper()
 
   for(int i = 0; i < n; i++)
   {
-    char name = *(alphabet[i]);
+    char name = alphabet[i];
 
     int arrivalTime = -log(drand48())/lambda;
     while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
