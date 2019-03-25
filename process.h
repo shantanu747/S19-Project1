@@ -28,7 +28,7 @@ public:
     int getWaitTime() const;
     int getPreemptedCount() const;
     int getTau() const;
-    bool sortHelper(Process a, Process b); 
+    bool sortHelper(Process a, Process b);
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
