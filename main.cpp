@@ -27,7 +27,7 @@ vector<Process> process_helper()
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   float lambda = 0.01;
   int upperBound = 3000;
-  int n = 26;
+  int n = 6;
   double container;
   vector<Process> all_processes;
 
@@ -119,7 +119,7 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
 
-  int n = 26;
+  int n = 6;
   int t_cs = 8;
   int timeslice = 84;
   string rrad = "END";
