@@ -29,9 +29,9 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
     Process IOProcess; //Holds current process in IO
 
     //Initial output
-    for(int i = 0; i < all_p.size(); i++)
+    for(int i = 0; i < all_processes.size(); i++)
     {
-      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
+      cout << "Process " << all_processes[i].getID() << " [NEW] (arrival time " << all_processes[i].getArrivalTime() << " ms) " << all_processes[i].getNumBursts() << " CPU bursts" << endl;
     }
 
     cout << "time " << time << "ms: Simulator started for FCFS ";

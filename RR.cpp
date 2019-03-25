@@ -5,7 +5,7 @@
 #include <string>
 #include <deque>
 #include <iomanip>
-
+#include <algorithm>
 #include "process.h"
 #include "functions.h"
 

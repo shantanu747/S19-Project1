@@ -36,7 +36,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   //Initial output
   for(int i = 0; i < all_p.size(); i++)
   {
-    cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
+    cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
   }
 
   // Begin algorithm simulation
