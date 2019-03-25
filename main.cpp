@@ -14,6 +14,11 @@
 #include <cmath>
 
 #include "process.h"
+#include "RR.cpp"
+#include "SJF.cpp"
+#include "SRT.cpp"
+#include "FCFS.cpp"
+
 
 using namespace std;
 
@@ -122,7 +127,7 @@ int main(int argc, char const *argv[])
   int n = 6;
   int t_cs = 8;
   int timeslice = 84;
-  string rrad = "END";
+  string rradd = "END";
 
   vector<Process> processes;
   processes = process_helper();
