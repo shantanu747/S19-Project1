@@ -88,7 +88,6 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     // Begin algorithm simulation
     cout << "time " << time << "ms: Simulator started for RR " << endl;
-    /*
     printQ_RR(readyQ);
 
     // while not all processes have been serviced
@@ -288,7 +287,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     avg_tat = total_turn_around_time / float(context_switches);
     avg_bt = total_burst_times / float(context_switches);
     avg_wt = total_wait_time / float(context_switches);
-  */
+  
 }
 
 void SJF(vector<Process> all_p, int n, int switch_time)
@@ -666,13 +665,14 @@ int main(int argc, char const *argv[])
 
   vector<Process> processes;
   processes = process_helper();
-  cout << processes.size() << endl;
+  /*
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);
   processes = process_helper();
   FCFS(processes, n, t_cs);
   processes = process_helper();
+  */
   RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }
