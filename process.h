@@ -12,10 +12,10 @@ class Process
 {
 public:
     Process();
-    Process(string gid, int arrival, int burst, int bcount, int io, float lambda);
+    Process(char gid, int arrival, int burst, int bcount, int io, float lambda);
 
     //Accessors
-    char getID() const;
+    char getID() const; 
     int getArrivalTime() const;
     int getBurstTime() const;
     int getNumBursts() const;
