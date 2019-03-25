@@ -35,7 +35,7 @@ bool sortHelper_SJF(Process a, Process b)
   return (a.getBurstTime() < b.getBurstTime());
 }
 
-void SFJ(vector<Process> all_p, int n, int switch_time)
+void SJF(vector<Process> all_p, int n, int switch_time)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
   int startNextIO = -1;

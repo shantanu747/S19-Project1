@@ -37,7 +37,7 @@ bool sortHelper_SRT(Process a, Process b)
 }
 
     //Process list | num of processes | context switch time
-void srt(vector<Process> p, int n, int t_cs){
+void SRT(vector<Process> p, int n, int t_cs){
 
     vector<Process> all_processes = p; //Copy of the passed in process vector
     vector<Process> readyQ; //Waiting processes get added here
