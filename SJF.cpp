@@ -59,6 +59,7 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
 
   // Begin algorithm simulation
   cout << "time " << time << "ms: Simulator started for SJF ";
+  /*
   printQ_SJF(readyQ);
 
   while(serviceQ.size() != numProcesses)
@@ -149,4 +150,5 @@ void SFJ(vector<Process> all_p, int n, int switch_time)
   {
 
   }
+  */
 }

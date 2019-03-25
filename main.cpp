@@ -119,11 +119,14 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
 
+  int n = 26;
+  int t_cs = 8;
+  int timeslice = 84;
+  string rrad = "END";
 
   vector<Process> processes;
   processes = process_helper();
   cout << processes.size() << endl;
-  /*
   SJF(processes, n, t_cs);
   processes = process_helper();
   SRT(processes, n, t_cs);
@@ -131,6 +134,6 @@ int main(int argc, char const *argv[])
   FCFS(processes, n, t_cs);
   processes = process_helper();
   RR(processes, n, t_cs, timeslice, rradd);
-  */
+
   return 0;
 }

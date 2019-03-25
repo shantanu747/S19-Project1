@@ -31,7 +31,8 @@ void printQ_SRT(vector<Process> &all)
 }
 
 //std::sort optional 3rd argument for sorting by remaining time in burst
-bool sortHelper_SRT(Process a, Process b){
+bool sortHelper_SRT(Process a, Process b)
+{
   return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
 }
 
@@ -56,6 +57,7 @@ void srt(vector<Process> p, int n, int t_cs){
     }
 
     cout << "time " << time << "ms: Simulator started for SRT ";
+    /*
     printQ_SRT(readyQ);
 
     //Iterates until all processes have been added to serviceQ
@@ -99,6 +101,7 @@ void srt(vector<Process> p, int n, int t_cs){
         time++;
     }
 
+    */
     //******************************//
     // END OF FUNCTION CALCULATIONS //
     //******************************//

@@ -58,6 +58,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     // Begin algorithm simulation
     cout << "time " << time << "ms: Simulator started for RR ";
+    /*
     printQ_RR(readyQ);
 
     // while not all processes have been serviced
@@ -246,16 +247,16 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     float avg_bt = 0.0; // average burst time
     float avg_wt = 0.0; // average wait time
 
-    /*
+
     for(int i = 0; i < all_p.size(); i++)
     {
 
     }
-    */
+    
     cout <<"time " << time+2 << "ms: Simulator ended for RR" ;
 
     avg_tat = total_turn_around_time / float(context_switches);
     avg_bt = total_burst_times / float(context_switches);
     avg_wt = total_wait_time / float(context_switches);
-
+  */
 }

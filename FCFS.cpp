@@ -30,7 +30,8 @@ void printQ_FCFS(vector<Process> &all)
     cout << q << endl;
 }
 
-void FCFS(vector<Process> all_p, int n, int switch_time){
+void FCFS(vector<Process> all_p, int n, int switch_time)
+{
     int t_cs = switch_time;
     unsigned int time = 0;
 
@@ -53,6 +54,7 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
     }
 
     cout << "time " << time << "ms: Simulator started for FCFS ";
+    /*
     printQ_FCFS(readyQ);
 
     //Iterates until all processes have been added to serviceQ
@@ -124,6 +126,8 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
         }
         time++;
     }
+    
+    */
 
     //******************************//
     // END OF FUNCTION CALCULATIONS //
