@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <deque>
 #include <iomanip>

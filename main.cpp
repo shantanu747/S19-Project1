@@ -1,6 +1,4 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <cstring>
@@ -12,6 +10,7 @@
 #include <deque>
 #include <cassert>
 #include <cmath>
+
 
 #include "RR.cpp"
 #include "SJF.cpp"
