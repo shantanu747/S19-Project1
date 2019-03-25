@@ -18,16 +18,14 @@ void printQ_RR(deque<Process> &all)
         cout << "[Q <empty>]" << endl;
         return;
     }
-    string q;
-    q += "[Q ";
+    string queue = "[Q ";
     for (int i = 0; i < all.size(); i++)
     {
-        q += all[i].getID();
-        q += " ";
+        queue += all[i].getID();
+        queue += " ";
     }
-    //q.pop_back();
-    q += "]";
-    cout << q << endl;
+    queue += "]";
+    cout << queue << endl;
 }
 
 void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)

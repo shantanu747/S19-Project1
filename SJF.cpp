@@ -35,11 +35,6 @@ bool sortHelper_SJF(Process a, Process b)
   return (a.getBurstTime() < b.getBurstTime());
 }
 
-void foo2()
-{
-  cout << "hello world!" << endl;
-}
-
 void SJF(vector<Process> all_p, int n, int switch_time)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
