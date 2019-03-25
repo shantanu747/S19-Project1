@@ -15,6 +15,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     deque<Process> all_p;
     for(int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
+      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
       all_p.push_back(p[i]);
     }
 
@@ -140,6 +141,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               else
               {
                 //send process to IO
+                currentProcess.addContextSwitch();
                 IOProcess = currentProcess;
                 ioTime = time + (t_cs/2);
               }
@@ -188,6 +190,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             int difference = currentProcess.getRemainingTimeInBurst() - t_slice;
             currentProcess.setRemainingTimeInBurst(difference);
           }
+          currentProcess.addContextSwitch(); //switch from waitQ to CPU happened
           cpuInUse = true;
         }
 
@@ -197,6 +200,15 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           IOProcess.setBlockedUntil(returnTime);
           cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
           printQ(readyQ);
+        }
+
+        if(!cpuInUse && startNextProcess < time && readyQ.size()>0)
+        {
+          //needed for when no processes waiting in readyQ for a while, all were in IO or waiting ot arrive at one point
+          //startNextProcess needs to be reassigned and new current process needed to be chosen
+          startNextProcess = time + (t_cs/2);
+          currentProcess = readyQ[0];
+          readyQ.erase(readyQ.begin());
         }
         time++;
     }

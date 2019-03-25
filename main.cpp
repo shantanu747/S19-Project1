@@ -30,7 +30,7 @@ vector<Process> process_helper()
   int upperBound = 3000;
   int n = 26;
   vector<Process> all_processes;
-  
+
   for(int i = 0; i < n; i++)
   {
     string name = to_string(alphabet[i]);
@@ -56,7 +56,7 @@ vector<Process> process_helper()
     int bursts = floor(drand48()*100);
     bursts += 1;
 
-    Process t(name, arrivalTime, burstTime, bursts, ioTime);
+    Process t(name, arrivalTime, burstTime, bursts, ioTime, lambda);
     all_processes.push_back(t);
   }
   return all_processes;

@@ -27,6 +27,12 @@ void FCFS(vector<Process> all_p, int n, int switch_time){
     Process currentProcess; //Holds currently bursting process
     Process IOProcess; //Holds current process in IO
 
+    //Initial output
+    for(int i = 0; i < all_p.size(); i++)
+    {
+      cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
+    }
+
     cout << "time " << time << "ms: Simulator started for FCFS ";
     printQ(readyQ);
 
