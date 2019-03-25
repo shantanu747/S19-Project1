@@ -8,7 +8,6 @@
 #include <algorithm>
 
 #include "process.h"
-#include "functions.h"
 
 using namespace std;
 
