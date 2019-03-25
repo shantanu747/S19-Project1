@@ -30,11 +30,6 @@ void printQ_FCFS(vector<Process> &all)
     cout << q << endl;
 }
 
-void foo1()
-{
-  cout << "hello world!" << endl;
-}
-
 void FCFS(vector<Process> all_p, int n, int switch_time)
 {
     int t_cs = switch_time;
