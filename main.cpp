@@ -63,11 +63,11 @@ void printQ_RR(deque<Process> &all)
 // call next simulation
 vector<Process> process_helper()
 {
-  long int seed = 777;
+  long int seed = 2;
   srand48(seed);
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   float lambda = 0.01;
-  int upperBound = 3000;
+  int upperBound = 200;
   int n = 2;
 
   vector<Process> all_processes;
@@ -111,7 +111,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   int numProcesses = n;
   bool cpuInUse = false; // only set to true while process in CPU
   bool firstProcessArrived = false;
-  unsigned int time = 0; // overall timer for simulation
+  long int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int burstEnd = -1;
 
@@ -162,14 +162,15 @@ void SJF(vector<Process> all_p, int n, int switch_time)
     if(cpuInUse && time == burstEnd)
     {
       all_p[cp].decreaseCPUBursts();
-      cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
-      printQ(readyQ);
       if(all_p[cp].getNumBursts()==0)
       {
         //process is finished, no need for IO
         all_p[cp].setServiced();
         serviceQ.push_back(all_p[cp]);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
+        printQ(readyQ);
+        cout << "Size of serviceQ is " << serviceQ.size() << endl;
+        printQ(readyQ);
         if(readyQ.size() > 0)
         {
           decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
@@ -179,6 +180,8 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       else if(all_p[cp].getNumBursts() > 0)
       {
         //IO needed
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+        printQ(readyQ);
         startNextIO = time + (t_cs/2); //time needed to exit CPU
         if(readyQ.size() > 0)
         {
@@ -191,7 +194,13 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       }
     }
 
-    else if(!cpuInUse && time == decisionTime)
+    if(!cpuInUse && startNextProcess < time && readyQ.size() > 0)
+    {
+      decisionTime = time + (t_cs/2);
+      startNextProcess = time + (t_cs/2);
+    }
+
+    if(!cpuInUse && time == decisionTime && readyQ.size() > 0)
     {
       for(int i = 0; i < all_p.size(); i++)
       {
@@ -205,7 +214,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
     }
 
     //time to put new process into the CPU
-    else if(!cpuInUse && time == startNextProcess)
+    if(!cpuInUse && time == startNextProcess)
     {
       burstEnd = time + all_p[cp].getBurstTime();
       cpuInUse = true; //CPU is now in use
@@ -221,11 +230,6 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
       printQ(readyQ);
     }
-
-    if(!cpuInUse && startNextProcess < time && readyQ.size() != 0)
-    {
-      startNextProcess = time + (t_cs/2);
-    }
     time++;
   }
 
@@ -239,11 +243,6 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
   float avg_wt = 0.0; // average wait time
-
-  for(int i = 0; i < all_p.size(); i++)
-  {
-
-  }
 
 }
 
@@ -301,8 +300,8 @@ int main(int argc, char const *argv[])
 
   //uncomment as functions are written and testable
   int n = 2;
-  int t_cs = 8;
-  int timeslice = 84;
+  int t_cs = 4;
+  int timeslice = 120;
   string rradd = "END";
 
   vector<Process> processes;
