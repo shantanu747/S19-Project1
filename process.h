@@ -12,10 +12,9 @@ class Process
 {
 public:
     Process();
-    Process(char gid, int arrival, int burst, int bcount, int io, float lambda);
-
+    Process(char gid, int arrival, vector<int> burstTimes, int bcount, vector<int> ioTimer, int ioCount, float lambda);
     //Accessors
-    char getID() const; 
+    char getID() const;
     int getArrivalTime() const;
     int getBurstTime() const;
     int getNumBursts() const;
@@ -40,6 +39,8 @@ public:
     void setWaitTime(int w);
     void addPreemptedCount();
     void setTau(int t);
+    void resetCPUBurst();
+    void resetIOBurst();
 
 private:
     char pid;
@@ -53,6 +54,9 @@ private:
     int blockedUntil;
     int tau;
     bool serviced;
+
+    vector<int> cpuTimes;
+    vector<int> ioTimes;
 
     int turnaroundTime;
     int waitTime;

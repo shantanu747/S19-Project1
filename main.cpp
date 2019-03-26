@@ -76,28 +76,47 @@ vector<Process> process_helper()
   {
     char name = alphabet[i];
 
-    int arrivalTime = -log(drand48())/lambda;
+    int arrivalTime = floor(-log(drand48())/lambda);
     while(arrivalTime > upperBound) //if above upper bound keep recalculating until it is within range
     {
-      arrivalTime = -log(drand48())/lambda;
+      arrivalTime = floor(-log(drand48())/lambda);
     }
 
-    int ioTime = -log(drand48())/lambda;
-    while(ioTime > upperBound) //if above upper bound keep recalculating until it is within range
+    int cpuBursts = floor(drand48()*100);
+    cpuBursts += 1;
+    int ioBursts = cpuBursts - 1;
+    vector<int> burstTimes;
+    vector<int> ioBurstTimes;
+    for(int i = 0; i < cpuBursts; i++)
     {
-      ioTime = -log(drand48())/lambda;
+      if(i == cpuBursts-1)
+      {
+        int burstTime = ceil(-log(drand48())/lambda);
+        while(burstTime > upperBound) //if above upper bound keep recalculating until it is within range
+        {
+          burstTime = ceil(-log(drand48())/lambda);
+        }
+        burstTimes.push_back(burstTime);
+      }
+      else
+      {
+        int burstTime = ceil(-log(drand48())/lambda);
+        while(burstTime > upperBound) //if above upper bound keep recalculating until it is within range
+        {
+          burstTime = ceil(-log(drand48())/lambda);
+        }
+        burstTimes.push_back(burstTime);
+
+        int ioTime = ceil(-log(drand48())/lambda);
+        while(ioTime > upperBound) //if above upper bound keep recalculating until it is within range
+        {
+          ioTime = ceil(-log(drand48())/lambda);
+        }
+        ioBurstTimes.push_back(burstTime);
+      }
     }
 
-    int burstTime = -log(drand48())/lambda;
-    while(burstTime > upperBound) //if above upper bound keep recalculating until it is within range
-    {
-      burstTime = -log(drand48())/lambda;
-    }
-
-    int bursts = floor(drand48()*100);
-    bursts += 1;
-
-    Process t(name, arrivalTime, burstTime, bursts, ioTime, lambda);
+    Process t(name, arrivalTime, burstTimes, cpuBursts, ioBurstTimes, ioBursts, lambda);
     all_processes.push_back(t);
   }
   return all_processes;
@@ -114,6 +133,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   long int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int burstEnd = -1;
+  int endSim = -1;
 
   vector<Process> readyQ;
   vector<Process> serviceQ;
@@ -144,6 +164,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
         if(!firstProcessArrived)
         {
           firstProcessArrived = true;
+          decisionTime = time;
           startNextProcess = time + (t_cs/2);
           cp = i;
         }
@@ -154,6 +175,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
         all_p[i].decreaseIOBursts(); //another IO burst finished, decrement counter for remaining bursts
         printQ(readyQ);
+        all_p[i].resetIOBurst();
       }
     }
     sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
@@ -169,8 +191,6 @@ void SJF(vector<Process> all_p, int n, int switch_time)
         serviceQ.push_back(all_p[cp]);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
         printQ(readyQ);
-        cout << "Size of serviceQ is " << serviceQ.size() << endl;
-        printQ(readyQ);
         if(readyQ.size() > 0)
         {
           decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
@@ -183,6 +203,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
         //IO needed
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
         printQ(readyQ);
+        all_p[cp].resetCPUBurst();
         startNextIO = time + (t_cs/2); //time needed to exit CPU
         if(readyQ.size() > 0)
         {

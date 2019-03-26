@@ -30,24 +30,29 @@ Process::Process() // default constructor
     contextSwitchCount = 0;
 }
 
-Process::Process(char gid, int arrival, int burst, int bcount, int io, float lambda)
+Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vector<int> ioTimer, int ioCount, float lambda)
 {
     pid = gid;
     arrivalTime = arrival;
-    burstTime = burst;
-    numBursts =  bcount;
-    ioTime = io;
-    numIO = numBursts - 1; //1 less I/O burst needed than CPU bursts
+    burstTime = burstTimes[0];
+    burstTimes.erase(burstTimes.begin());
+    numBursts = bcount;
+    ioTime = ioTimer[0];
+    ioTimer.erase(ioTimer.begin());
+    numIO = ioCount; //1 less I/O burst needed than CPU bursts
     cpuTime = burstTime*numBursts;
     timeInIO = ioTime*numIO; //total time that will be spent in IO
     blockedUntil = -1; //doesn't trigger at time 0
     serviced = false;
     turnaroundTime = 0;
     waitTime = 0;
-    timeRemainingInBurst = burst;
+    timeRemainingInBurst = burstTime;
     preemptedCount = 0;
     contextSwitchCount = 0;
     tau = 1/lambda;
+
+    ioTimes = ioTimer;
+    cpuTimes = burstTimes;
 }
 
 // ACCESSORS
@@ -167,3 +172,24 @@ void Process::setTau(int t)
   tau = t;
 }
 
+void Process::resetCPUBurst()
+{
+  if(cpuTimes.size()>0){
+    burstTime = cpuTimes[0];
+    cpuTimes.erase(cpuTimes.begin());
+  }
+  else{
+    burstTime = 0;
+  }
+}
+
+void Process::resetIOBurst()
+{
+  if(ioTimes.size()>0){
+    ioTime = ioTimes[0];
+    ioTimes.erase(ioTimes.begin());
+  }
+  else{
+    ioTime = 0;
+  }
+}
