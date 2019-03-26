@@ -176,6 +176,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
           decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
           startNextProcess = time + t_cs; //next process starts at this time
         }
+        cpuInUse = false;
       }
       else if(all_p[cp].getNumBursts() > 0)
       {
