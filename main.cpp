@@ -28,10 +28,12 @@ void printQ(vector<Process> &all)
     for (int i = 0; i < all.size(); i++)
     {
         q += all[i].getID();
+        if(i == all.size()-1){
+          q += "]";
+        }
         q += " ";
     }
     //q.pop_back();
-    q += "]";
     cout << q << endl;
 }
 
@@ -70,7 +72,7 @@ vector<Process> process_helper()
   int upperBound = 200;
   int n = 2;
 
-  vector<Process> all_processes;
+  vector<Process> all_p;
 
   for(int i = 0; i < n; i++)
   {
@@ -112,14 +114,14 @@ vector<Process> process_helper()
         {
           ioTime = ceil(-log(drand48())/lambda);
         }
-        ioBurstTimes.push_back(burstTime);
+        ioBurstTimes.push_back(ioTime);
       }
     }
 
     Process t(name, arrivalTime, burstTimes, cpuBursts, ioBurstTimes, ioBursts, lambda);
-    all_processes.push_back(t);
+    all_p.push_back(t);
   }
-  return all_processes;
+  return all_p;
 }
 
 void SJF(vector<Process> all_p, int n, int switch_time)
@@ -268,6 +270,148 @@ void SJF(vector<Process> all_p, int n, int switch_time)
 
 }
 
+void FCFS(vector < Process > all_p, int n, int switch_time) 
+{
+  int t_cs = switch_time;
+  unsigned int time = 0;
+
+  vector < Process > readyQ; //Waiting processes get added here
+  vector < Process > serviceQ; //Finished processes get added here
+
+  bool cpuInUse = false; //Set to true only when the CPU is being used
+  bool firstProcessArrived = false;
+
+  //For keeping track of various important times in the CPU burst process
+  int burstEnd = -1;
+  int startNextIO = -1;
+  int startNextProcess = -1;
+  int returnTime = -1;
+
+  int cp; //Holds currently bursting process
+  int ip; //Holds current process in IO
+
+  //Initial output
+  for (int i = 0; i < all_p.size(); i++)
+  {
+    cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+  }
+  cout << "\n";
+
+  cout << "time " << time << "ms: Simulator started for FCFS ";
+  printQ(readyQ);
+
+  //Iterates until all processes have been added to serviceQ
+  while (serviceQ.size() != all_p.size())
+  {
+    //Iterates over each process to see if anything arrives at this time
+    for (int i = 0; i < all_p.size(); i++)
+    {
+      //Check to see if i-th process arrives *now*
+      if (all_p[i].getArrivalTime() == time)
+      {
+        readyQ.push_back(all_p[i]);
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived; added to ready queue ";
+        printQ(readyQ);
+        if (!firstProcessArrived)
+        {
+          firstProcessArrived = true;
+          startNextProcess = time + (t_cs / 2);
+          cp = i;
+        }
+      }
+
+      //Check to see if i-th process returns from I/O *now*
+      if (all_p[i].getBlockedUntil() == time)
+      {
+        readyQ.push_back(all_p[i]);
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " completed I/O; added to ready queue ";
+        all_p[i].decreaseIOBursts();
+        printQ(readyQ);
+        all_p[i].resetIOBurst();
+      }
+    }
+
+    //Current CPU Burst ended
+    if (cpuInUse && burstEnd == time)
+    {
+      all_p[cp].decreaseCPUBursts();
+
+      //Process has no more remaining bursts, service the process
+      if (all_p[cp].getNumBursts() == 0)
+      {
+        all_p[cp].setServiced();
+        serviceQ.push_back(all_p[cp]);
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
+        printQ(readyQ);
+      }
+
+      //Current burst gets sent to IO, CPU use disabled
+      else if (all_p[cp].getNumBursts() > 0)
+      {
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+        printQ(readyQ);
+        startNextIO = time; //time needed to exit CPU
+        startNextProcess = time + t_cs; //next process starts at this time
+        ip = cp;
+        returnTime = startNextIO + all_p[ip].getIOTime();
+        all_p[ip].setBlockedUntil(returnTime);
+        all_p[ip].addContextSwitch(); //increment context switch count for this process
+        cpuInUse = false; //CPU is not in use anymore
+      }
+    }
+
+
+    if (!cpuInUse && startNextProcess < time && readyQ.size() != 0)
+    {
+      startNextProcess = time + (t_cs / 2);
+    }
+
+    //CPU ready to accept frontmost process from the readyQ
+    else if (!cpuInUse && time == startNextProcess)
+    {
+      for (int i = 0; i < all_p.size(); i++)
+      {
+        if (all_p[i].getID() == readyQ[0].getID())
+        {
+          cp = i;
+          break;
+        }
+      }
+      readyQ.erase(readyQ.begin()); //remove the process from the readyQ
+
+      burstEnd = time + all_p[cp].getBurstTime();
+      cpuInUse = true; //CPU is now in use
+      cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
+      printQ(readyQ);
+    }
+
+    //output message saying process is now in IO
+    if (time == startNextIO)
+    {
+      //cout << "IO Time of process " << cp << " is " << all_p[cp].getIOTime() << endl;
+      cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
+      printQ(readyQ);
+    }
+
+    time++;
+  }
+
+  //******************************//
+  // END OF FUNCTION CALCULATIONS //
+  //******************************//
+
+  // calculations for avg algorithm stats
+  float total_turn_around_time = 0;
+  float total_burst_times = 0;
+  float total_wait_time = 0;
+
+  int context_switches = 0;
+
+  float avg_tat = 0.0; // average turn around time
+  float avg_bt = 0.0; // average burst time
+  float avg_wt = 0.0; // average wait time
+}
+
 int main(int argc, char const *argv[])
 {
   /*
@@ -329,11 +473,11 @@ int main(int argc, char const *argv[])
   vector<Process> processes;
   processes = process_helper();
   //cout << processes.size() << endl;
-  SJF(processes, n, t_cs);
+  //SJF(processes, n, t_cs);
   //processes = process_helper();
   //SRT(processes, n, t_cs);
   //processes = process_helper();
-  //FCFS(processes, n, t_cs);
+  FCFS(processes, n, t_cs);
   //processes = process_helper();
   //RR(processes, n, t_cs, timeslice, rradd);
   return 0;
