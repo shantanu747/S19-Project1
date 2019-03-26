@@ -218,7 +218,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
 
     if(!cpuInUse && startNextProcess < time && readyQ.size() > 0)
     {
-      decisionTime = time + (t_cs/2);
+      decisionTime = time;
       startNextProcess = time + (t_cs/2);
     }
 
@@ -329,12 +329,12 @@ int main(int argc, char const *argv[])
   vector<Process> processes;
   processes = process_helper();
   //cout << processes.size() << endl;
-  SJF(processes, n, t_cs);
+  //SJF(processes, n, t_cs);
   //processes = process_helper();
   //SRT(processes, n, t_cs);
   //processes = process_helper();
   //FCFS(processes, n, t_cs);
   //processes = process_helper();
-  //RR(processes, n, t_cs, timeslice, rradd);
+  RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }

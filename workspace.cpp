@@ -52,7 +52,9 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 if(!firstProcessArrived)
                 {
                   firstProcessArrived = true;
+                  decisionTime = time;
                   startNextProcess = time + (t_cs/2); //first process just arrived, start loading into CPU and start executing at t_cs/2
+                  cp = i;
                 }
                 printQ_RR(readyQ);
             }
@@ -61,6 +63,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             {
               cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
               all_p[i].decreaseIOBursts();//another IO bursts completed, reduce number of bursts needed
+              all_p[i].resetIOBurst();
               if(rradd == "BEGINNING")
               {
                 readyQ.push_front(all_p[i]);
@@ -80,29 +83,35 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           if(readyQ.size() == 0)
           {
             //CPU burst finished
-            if(currentProcess.getRemainingTimeInBurst() == 0)
+            if(all_p[cp].getRemainingTimeInBurst() == 0)
             {
-              currentProcess.decreaseCPUBursts(); //another CPU burst finished, decrement the count
-              if(currentProcess.getNumBursts() == 0)
+              all_p[cp].decreaseCPUBursts(); //another CPU burst finished, decrement the count
+              if(all_p[cp].getNumBursts() == 0)
               {
                 //process has finished executing, setServiced
-                currentProcess.setServiced();
-                serviceQ.push_back(currentProcess);
-                currentProcess.addContextSwitch();
-                decisionTime = time + (t_cs/2); //chose next process at this time
-                startNextProcess = time + t_cs;
+                all_p[cp].setServiced();
+                serviceQ.push_back(all_p[cp]);
+                all_p[cp].addContextSwitch();
+                cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
+                printQ(readyQ);
               }
               else //send process to IO
               {
-                IOProcess = currentProcess;
-                ioTime = time + (t_cs/2);
+                cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+                printQ(readyQ);
+                all_p[cp].resetCPUBurst();
+                all_p[cp].addContextSwitch();
+                int returnTime = time + all_p[cp].getIOTime();
+                all_p[cp].setBlockedUntil(returnTime);
+                cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
+                printQ_RR(readyQ);
               }
               cpuInUse = false; //free up cpu from use so next event can occur
             }
             //Remaining time might be less than t_slice
-            else if(currentProcess.getRemainingTimeInBurst() <= t_slice)
+            else if(all_p[cp].getRemainingTimeInBurst() <= t_slice)
             {
-              burst_end = time + currentProcess.getRemainingTimeInBurst();
+              burst_end = time + all_p[cp].getRemainingTimeInBurst();
             }
             //extend by t_slice with no preemption
             else
@@ -155,11 +164,26 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           }
         }
 
+        if(!cpuInUse && startNextProcess < time && readyQ.size()>0)
+        {
+          //needed for when no processes waiting in readyQ for a while, all were in IO or waiting ot arrive at one point
+          //startNextProcess needs to be reassigned and new current process needed to be chosen
+          startNextProcess = time + (t_cs/2);
+          decisionTime = time;
+        }
+
         //cpu not in use since last burst ended, decide next process to start loading in
         else if(!cpuInUse && time == decisionTime && readyQ.size() != 0)
         {
           //assign this as our current process to start loading in
-          currentProcess = readyQ[0];
+          for(int i = 0; i < all_p.size(); i++)
+          {
+            if(all_p[i].getID() == readyQ[0].getID())
+            {
+              cp = i;
+              break;
+            }
+          }
           readyQ.erase(readyQ.begin());
         }
 
@@ -181,23 +205,6 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
           }
           currentProcess.addContextSwitch(); //switch from waitQ to CPU happened
           cpuInUse = true;
-        }
-
-        if(time == ioTime) //time to send IOProcess to IO
-        {
-          int returnTime = time + IOProcess.getIOTime();
-          IOProcess.setBlockedUntil(returnTime);
-          cout << "time " << time << "ms: Process " << IOProcess.getID() << " sent for IO burst ";
-          printQ_RR(readyQ);
-        }
-
-        if(!cpuInUse && startNextProcess < time && readyQ.size()>0)
-        {
-          //needed for when no processes waiting in readyQ for a while, all were in IO or waiting ot arrive at one point
-          //startNextProcess needs to be reassigned and new current process needed to be chosen
-          startNextProcess = time + (t_cs/2);
-          currentProcess = readyQ[0];
-          readyQ.erase(readyQ.begin());
         }
         time++;
     }
@@ -225,7 +232,6 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     avg_tat = total_turn_around_time / float(context_switches);
     avg_bt = total_burst_times / float(context_switches);
     avg_wt = total_wait_time / float(context_switches);
-
 }
 
 void FCFS(vector<Process> all_p, int n, int switch_time)
