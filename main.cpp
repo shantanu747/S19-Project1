@@ -40,7 +40,7 @@ void printQ(vector<Process> &all)
 //std::sort optional 3rd argument for sorting by remaining time in burst
 bool sortHelper(Process a, Process b)
 {
-  return (a.getRemainingTimeInBurst() < b.getRemainingTimeInBurst());
+  return (a.getTau() < b.getTau());
 }
 
 void printQ_RR(deque<Process> &all)
@@ -127,7 +127,6 @@ vector<Process> process_helper()
 void SJF(vector<Process> all_p, int n, int switch_time)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
-  int startNextIO = -1;
   int decisionTime = -1;
   int numProcesses = n;
   bool cpuInUse = false; // only set to true while process in CPU
@@ -136,11 +135,11 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   int startNextProcess = -1; // By default first process should not start before this time
   int burstEnd = -1;
   int endSim = -1;
+  float alpha = 0.5;
 
   vector<Process> readyQ;
   vector<Process> serviceQ;
   int cp;
-  int ip;
 
   //Initial output
   for(int i = 0; i < all_p.size(); i++)
@@ -174,7 +173,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       if(time == all_p[i].getBlockedUntil())
       {
         readyQ.push_back(all_p[i]);
-        cout << "time " << time << "ms: Process " << all_p[i].getID() << " finished I/O and added to ready queue ";
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() <<"ms) completed I/O and added to ready queue ";
         all_p[i].decreaseIOBursts(); //another IO burst finished, decrement counter for remaining bursts
         printQ(readyQ);
         all_p[i].resetIOBurst();
@@ -203,17 +202,24 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       else if(all_p[cp].getNumBursts() > 0)
       {
         //IO needed
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " (tau " << all_p[cp].getTau() <<"ms) completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+        printQ(readyQ);
+        int newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+        //newTau = newTau + 1;
+        all_p[cp].setTau(newTau);
+        cout << "time " << time << "ms: Recalculated tau = " << newTau << "ms for process " << all_p[cp].getID() << " ";
         printQ(readyQ);
         all_p[cp].resetCPUBurst();
-        startNextIO = time + (t_cs/2); //time needed to exit CPU
+        all_p[cp].addContextSwitch(); //increment context switch count for this process
+        int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
+        all_p[cp].setBlockedUntil(returnTime);
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
+        printQ(readyQ);
         if(readyQ.size() > 0)
         {
           decisionTime = time + (t_cs/2); //shortest process at this time is next one to be loaded into CPU, not shortest process at startNextProcess
           startNextProcess = time + t_cs; //next process starts at this time
         }
-        ip = cp;
-        all_p[ip].addContextSwitch(); //increment context switch count for this process
         cpuInUse = false; //CPU is not in use anymore
       }
     }
@@ -246,16 +252,10 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       printQ(readyQ);
     }
 
-    //output message saying process is now in IO
-    if(time == startNextIO)
-    {
-      int returnTime = startNextIO + all_p[ip].getIOTime();
-      all_p[ip].setBlockedUntil(returnTime);
-      cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
-      printQ(readyQ);
-    }
     time++;
   }
+  cout << "time " << time+(t_cs/2)-1 << "ms: Simulator ended for SJF ";
+  printQ(readyQ);
 
   // calculations for avg algorithm stats
   float total_turn_around_time = 0;
@@ -270,7 +270,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
 
 }
 
-void FCFS(vector < Process > all_p, int n, int switch_time) 
+void FCFS(vector < Process > all_p, int n, int switch_time)
 {
   int t_cs = switch_time;
   unsigned int time = 0;
@@ -473,12 +473,12 @@ int main(int argc, char const *argv[])
   vector<Process> processes;
   processes = process_helper();
   //cout << processes.size() << endl;
-  //SJF(processes, n, t_cs);
+  SJF(processes, n, t_cs);
   //processes = process_helper();
   //SRT(processes, n, t_cs);
   //processes = process_helper();
-  FCFS(processes, n, t_cs);
+  //FCFS(processes, n, t_cs);
   //processes = process_helper();
-  RR(processes, n, t_cs, timeslice, rradd);
+  //RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }

@@ -103,7 +103,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 all_p[cp].addContextSwitch();
                 int returnTime = time + all_p[cp].getIOTime();
                 all_p[cp].setBlockedUntil(returnTime);
-                cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
+                cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
                 printQ_RR(readyQ);
               }
               cpuInUse = false; //free up cpu from use so next event can occur
