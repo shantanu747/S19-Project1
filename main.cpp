@@ -69,14 +69,14 @@ void printQ_RR(deque<Process> &all)
 // after each simulation algorithm ends, we regenerate vector<Process>
 // with new burst times, burst count, io times
 // call next simulation
-vector<Process> process_helper()
+vector<Process> process_helper(long int s, int lamb, int ub, int num)
 {
-  long int seed = 2;
+  long int seed = s;
   srand48(seed);
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  float lambda = 0.01;
-  int upperBound = 200;
-  int n = 2;
+  float lambda = almb;
+  int upperBound = ub;
+  int n = num;
 
   vector<Process> all_p;
 
@@ -1027,15 +1027,14 @@ int main(int argc, char const *argv[])
 
 
   vector<Process> processes;
-  processes = process_helper();
+  processes = process_helper(seed, lambda, upper_bound, n);
   SJF(processes, n, t_cs, alpha);
   cout << endl;
-  //processes = process_helper();
+  processes = process_helper(seed, lambda, upper_bound, n);
   SRT(processes, n, t_cs, alpha);
-  //processes = process_helper();
+  processes = process_helper(seed, lambda, upper_bound, n);
   FCFS(processes, n, t_cs);
-  cout << endl;
-  //processes = process_helper();
+  processes = process_helper(seed, lambda, upper_bound, n);
   RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }
