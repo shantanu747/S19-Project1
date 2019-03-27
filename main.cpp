@@ -260,6 +260,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       cpuInUse = true; //CPU is now in use
       cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
       printQ(readyQ);
+      all_p[cp].addContextSwitch();
     }
 
     time++;
@@ -418,6 +419,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       cpuInUse = true; //CPU is now in use
       cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
       printQ(readyQ);
+      all_p[cp].addContextSwitch();
     }
     time++;
   }
@@ -556,12 +558,16 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             //Remaining time might be less than t_slice
             else if(all_p[cp].getRemainingTimeInBurst() <= t_slice)
             {
+              cout << "time " << time << "ms: Time slice expired; no preemption because ready queue is empty ";
+              printQ_RR(readyQ);
               burst_end = time + all_p[cp].getRemainingTimeInBurst();
               all_p[cp].setRemainingTimeInBurst(0);
             }
             //extend by t_slice with no preemption
             else
             {
+              cout << "time " << time << "ms: Time slice expired; no preemption because ready queue is empty ";
+              printQ_RR(readyQ);
               burst_end = time + t_slice;
               int difference = all_p[cp].getRemainingTimeInBurst() - t_slice;
               all_p[cp].setRemainingTimeInBurst(difference);
@@ -745,12 +751,12 @@ void SRT(vector <Process> p, int n, int t_cs)
       cpuInUse = true;
       if(all_p[cp].getPreempted())
       {
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
         printQ(readyQ);
       }
       else
       {
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
         printQ(readyQ);
       }
       all_p[cp].addContextSwitch();
@@ -979,6 +985,5 @@ int main(int argc, char const *argv[])
   //cout << endl;
   //processes = process_helper();
   //RR(processes, n, t_cs, timeslice, rradd);
-  //cout << endl;
   return 0;
 }
