@@ -989,7 +989,7 @@ int main(int argc, char const *argv[])
               queue for RR. Optional
   */
 
-  /*
+
 
   if(argc != 8 || argc != 9)
   {
@@ -997,7 +997,7 @@ int main(int argc, char const *argv[])
     return 1;
   }
 
-  //int seed = atoi(argv[1]);
+  long int seed = atoi(argv[1]);
   int lambda = atoi(argv[2]);
   int upper_bound = atoi(argv[3]);
   int n = atoi(argv[4]);
@@ -1024,13 +1024,7 @@ int main(int argc, char const *argv[])
   {
     rradd = "END"; //default behavior
   }
-  */
 
-  //uncomment as functions are written and testable
-  int n = 2;
-  int t_cs = 4;
-  int timeslice = 120;
-  string rradd = "END";
 
   vector<Process> processes;
   processes = process_helper();
