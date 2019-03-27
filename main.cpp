@@ -256,6 +256,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       cpuInUse = true; //CPU is now in use
       cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
       printQ(readyQ);
+      all_p[cp].addContextSwitch();
     }
 
     time++;
@@ -400,6 +401,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       cpuInUse = true; //CPU is now in use
       cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
       printQ(readyQ);
+      all_p[cp].addContextSwitch();
     }
     time++;
   }
@@ -727,12 +729,12 @@ void SRT(vector <Process> p, int n, int t_cs)
       cpuInUse = true;
       if(all_p[cp].getPreempted())
       {
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
         printQ(readyQ);
       }
       else
       {
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
         printQ(readyQ);
       }
       all_p[cp].addContextSwitch();
