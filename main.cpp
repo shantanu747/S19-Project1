@@ -140,7 +140,6 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
   long int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int burst_end = -1;
-  int endSim = -1;
   float alpha = a;
 
   vector<Process> readyQ;
@@ -275,10 +274,6 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 
   int contextSwitches = 0;
 
-  float avg_tat = 0.0; // average turn around time
-  float avg_bt = 0.0; // average burst time
-  float avg_wt = 0.0; // average wait time
-
   for(int i = 0; i < all_p.size(); i++)
   {
     totalTurnaroundTime += all_p[i].getTurnaroundTime();
@@ -313,12 +308,9 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
 
   //For keeping track of various important times in the CPU burst process
   int burst_end = -1;
-  int startNextIO = -1;
   int startNextProcess = -1;
-  int returnTime = -1;
 
   int cp; //Holds currently bursting process
-  int ip; //Holds current process in IO
 
   //Initial output
   int totalBursts = 0;
@@ -444,10 +436,6 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   float totalWaitTime = 0;
 
   int contextSwitches = 0;
-
-  float avg_tat = 0.0; // average turn around time
-  float avg_bt = 0.0; // average burst time
-  float avg_wt = 0.0; // average wait time
 
   for(int i = 0; i < all_p.size(); i++)
   {
@@ -729,10 +717,6 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     int contextSwitches = 0;
 
-    float avg_tat = 0.0; // average turn around time
-    float avg_bt = 0.0; // average burst time
-    float avg_wt = 0.0; // average wait time
-
     for(int i = 0; i < all_p.size(); i++)
     {
       totalTurnaroundTime += all_p[i].getTurnaroundTime();
@@ -765,7 +749,6 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
   int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int decisionTime = -1; //due to push-front behavior, make decision at burst_end + t_cs/2 for next process
-  int burst_end = -1; // acts as marker for when next context switch/preemption should occur
 
   int cp; //To hold the data for the current bursting process
   float alpha = a;
@@ -949,10 +932,6 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
 
   int contextSwitches = 0;
 
-  float avg_tat = 0.0; // average turn around time
-  float avg_bt = 0.0; // average burst time
-  float avg_wt = 0.0; // average wait time
-
   for(int i = 0; i < all_p.size(); i++)
   {
     totalTurnaroundTime += all_p[i].getTurnaroundTime();
@@ -1016,9 +995,9 @@ int main(int argc, char const *argv[])
   int alpha = atoi(argv[6]);
   int timeslice = atoi(argv[7]);
   string rradd;
-  if(argc = 9) //optional argument supplied
+  if(argc == 9) //optional argument supplied
   {
-    rradd = argv[8]
+    rradd = argv[8];
   }
   else
   {
