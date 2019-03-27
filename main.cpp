@@ -297,7 +297,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
   }
   cout << "time " << time+(t_cs/2)-1 << "ms: Simulator ended for SJF ";
   printQ(readyQ);
-
+/*
   // calculations for avg algorithm stats
   float totalTurnaroundTime = 0;
   float totalBurstTime = 0;
@@ -324,6 +324,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
   outfile << "-- total number of context switches: " << contextSwitches << endl;
   outfile << "-- total number of preemptions: 0" << endl;
   outfile.close();
+  */
 }
 
 void FCFS(vector < Process > all_p, int n, int switch_time)
@@ -505,7 +506,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
     waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs*2));
     totalWaitTime += waitTime;
   }
-
+/*
   ofstream outfile("simout.txt");
   //outfile.precision(6);
   outfile << "Algorithm FCFS" << endl;
@@ -834,6 +835,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR ";
     printQ_RR(readyQ);
 
+/*
     // calculations for avg algorithm stats
     float totalTurnaroundTime = 0;
     float totalBurstTime = 0;
@@ -851,6 +853,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
       totalWaitTime += waitTime;
     }
 
+
     ofstream outfile("simout.txt");
     //outfile.precision(6);
     outfile << "Algorithm RR" << endl;
@@ -860,6 +863,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     outfile << "-- total number of context switches: " << contextSwitches << endl;
     outfile << "-- total number of preemptions: 0" << endl;
     outfile.close();
+    */
 }
 
 void SRT(vector <Process> p, int n, int t_cs, float a)
@@ -1088,7 +1092,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
   //******************************//
   // END OF FUNCTION CALCULATIONS //
   //******************************//
-
+/*
   // calculations for avg algorithm stats
   float totalTurnaroundTime = 0;
   float totalBurstTime = 0;
@@ -1115,6 +1119,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
   outfile << "-- total number of context switches: " << contextSwitches << endl;
   outfile << "-- total number of preemptions: 0" << endl;
   outfile.close();
+  */
 }
 
 int main(int argc, char const *argv[])
