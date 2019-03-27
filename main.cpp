@@ -130,7 +130,7 @@ vector<Process> process_helper()
   return all_p;
 }
 
-void SJF(vector<Process> all_p, int n, int switch_time)
+void SJF(vector<Process> all_p, int n, int switch_time, float a)
 {
   int t_cs = switch_time; // takes this much time to make a context switch
   int decisionTime = -1;
@@ -141,7 +141,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   int startNextProcess = -1; // By default first process should not start before this time
   int burst_end = -1;
   int endSim = -1;
-  float alpha = 0.5;
+  float alpha = a;
 
   vector<Process> readyQ;
   vector<Process> serviceQ;
@@ -754,7 +754,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     outfile.close();
 }
 
-void SRT(vector <Process> p, int n, int t_cs)
+void SRT(vector <Process> p, int n, int t_cs, float a)
 {
   vector < Process > all_p = p; //Copy of the passed in process vector
   vector < Process > readyQ; //Waiting processes get added here
@@ -768,7 +768,7 @@ void SRT(vector <Process> p, int n, int t_cs)
   int burst_end = -1; // acts as marker for when next context switch/preemption should occur
 
   int cp; //To hold the data for the current bursting process
-  float alpha = 0.5;
+  float alpha = a;
 
   //Initial output
   int totalBursts = 0;
@@ -1028,14 +1028,14 @@ int main(int argc, char const *argv[])
 
   vector<Process> processes;
   processes = process_helper();
-  SJF(processes, n, t_cs);
+  SJF(processes, n, t_cs, alpha);
   cout << endl;
   //processes = process_helper();
-  //SRT(processes, n, t_cs);
+  SRT(processes, n, t_cs, alpha);
   //processes = process_helper();
-  //FCFS(processes, n, t_cs);
-  //cout << endl;
+  FCFS(processes, n, t_cs);
+  cout << endl;
   //processes = process_helper();
-  //RR(processes, n, t_cs, timeslice, rradd);
+  RR(processes, n, t_cs, timeslice, rradd);
   return 0;
 }
