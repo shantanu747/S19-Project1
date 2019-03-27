@@ -74,7 +74,7 @@ vector<Process> process_helper(long int s, int lamb, int ub, int num)
   long int seed = s;
   srand48(seed);
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  float lambda = almb;
+  float lambda = lamb;
   int upperBound = ub;
   int n = num;
 
@@ -303,7 +303,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 void FCFS(vector < Process > all_p, int n, int switch_time)
 {
   int t_cs = switch_time;
-  unsigned int time = 0;
+  int time = 0;
 
   vector < Process > readyQ; //Waiting processes get added here
   vector < Process > serviceQ; //Finished processes get added here
@@ -486,7 +486,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     bool cpuInUse = false; // only set to true while process in CPU
     bool firstProcessArrived = false;
     string rradd = behavior; //BEGINNING OR END
-    unsigned int time = 0; // overall timer for simulation
+    int time = 0; // overall timer for simulation
     int startNextProcess = -1; // By default first process should not start before this time
     int decisionTime = -1; //due to push-front behavior, make decision at burst_end + t_cs/2 for next process
     int burst_end = -1; // acts as marker for when next context switch/preemption should occur
@@ -762,7 +762,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
 
   bool cpuInUse = false; //Set to true only when the CPU is being used
   bool firstProcessArrived = false;
-  unsigned int time = 0; // overall timer for simulation
+  int time = 0; // overall timer for simulation
   int startNextProcess = -1; // By default first process should not start before this time
   int decisionTime = -1; //due to push-front behavior, make decision at burst_end + t_cs/2 for next process
   int burst_end = -1; // acts as marker for when next context switch/preemption should occur
