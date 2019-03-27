@@ -506,7 +506,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
     waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs*2));
     totalWaitTime += waitTime;
   }
-/*
+
   ofstream outfile("simout.txt");
   //outfile.precision(6);
   outfile << "Algorithm FCFS" << endl;
