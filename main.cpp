@@ -280,7 +280,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
     totalBurstTime += all_p[i].getCPUTime();
     contextSwitches += all_p[i].getContextSwitchCount();
     int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
     totalWaitTime += waitTime;
   }
 
