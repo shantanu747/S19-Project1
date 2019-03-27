@@ -212,7 +212,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
         cout << "time " << time << "ms: Recalculated tau = " << newTau << "ms for process " << all_p[cp].getID() << " ";
         printQ(readyQ);
         all_p[cp].resetCPUBurst();
-        all_p[cp].addContextSwitch(); //increment context switch count for this process
+        //all_p[cp].addContextSwitch(); //increment context switch count for this process
         int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
         all_p[cp].setBlockedUntil(returnTime);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
@@ -297,7 +297,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
   }
-  
+
   cout << "time " << time << "ms: Simulator started for FCFS ";
   printQ(readyQ);
 
@@ -341,7 +341,9 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       if (all_p[cp].getNumBursts() == 0)
       {
         all_p[cp].setServiced();
-        all_p[cp].addContextSwitch();
+        int tat = time - all_p[cp].getArrivalTime();
+        all_p[cp].setTurnaroundTime(tat);
+        //all_p[cp].addContextSwitch();
         serviceQ.push_back(all_p[cp]);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
         printQ(readyQ);
@@ -358,7 +360,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
         printQ(readyQ);
         all_p[cp].resetCPUBurst();
-        all_p[cp].addContextSwitch(); //increment context switch count for this process
+        //all_p[cp].addContextSwitch(); //increment context switch count for this process
         int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
         all_p[cp].setBlockedUntil(returnTime);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
@@ -508,7 +510,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 //process has finished executing, setServiced
                 all_p[cp].setServiced();
                 serviceQ.push_back(all_p[cp]);
-                all_p[cp].addContextSwitch();
+                //all_p[cp].addContextSwitch();
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
                 printQ_RR(readyQ);
               }
@@ -519,7 +521,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 all_p[cp].resetCPUBurst();
                 all_p[cp].resetPreempted();
                 all_p[cp].setRemainingTimeInBurst(all_p[cp].getBurstTime());
-                all_p[cp].addContextSwitch();
+                //all_p[cp].addContextSwitch();
                 int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
                 all_p[cp].setBlockedUntil(returnTime);
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
@@ -553,7 +555,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 //process just finished CPU burst, has no more CPU or IO bursts remaining
                 //process is serviced
                 all_p[cp].setServiced();
-                all_p[cp].addContextSwitch();
+                //all_p[cp].addContextSwitch();
                 serviceQ.push_back(all_p[cp]);
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
                 printQ_RR(readyQ);
@@ -566,7 +568,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 all_p[cp].resetCPUBurst();
                 all_p[cp].resetPreempted();
                 all_p[cp].setRemainingTimeInBurst(all_p[cp].getBurstTime());
-                all_p[cp].addContextSwitch(); //increment context switch count for this process
+                //all_p[cp].addContextSwitch(); //increment context switch count for this process
                 int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
                 all_p[cp].setBlockedUntil(returnTime);
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
@@ -576,7 +578,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             //current process needs more CPU time before IO
             else
             {
-              all_p[cp].addContextSwitch();
+              //all_p[cp].addContextSwitch();
               all_p[cp].addPreemptedCount();
               cout << "time " << time << "ms: Time slice expired; process " << all_p[cp].getID() << " preempted with " << all_p[cp].getRemainingTimeInBurst() << "ms to go ";
               printQ_RR(readyQ);
@@ -762,7 +764,7 @@ void SRT(vector <Process> p, int n, int t_cs)
           decisionTime = time + t_cs/2;
           cpuInUse = false;
           all_p[cp].addPreemptedCount();
-          all_p[cp].addContextSwitch();
+          //all_p[cp].addContextSwitch();
           startNextProcess = time + t_cs;
           cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) completed I/O and will preempt " << all_p[cp].getID() <<" ";
           printQ(readyQ);
@@ -831,7 +833,7 @@ void SRT(vector <Process> p, int n, int t_cs)
             //process has finished executing, setServiced
             all_p[cp].setServiced();
             serviceQ.push_back(all_p[cp]);
-            all_p[cp].addContextSwitch();
+            //all_p[cp].addContextSwitch();
             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
             printQ(readyQ);
           }
@@ -847,7 +849,7 @@ void SRT(vector <Process> p, int n, int t_cs)
             all_p[cp].resetCPUBurst();
             all_p[cp].resetPreempted();
             all_p[cp].setRemainingTimeInBurst(all_p[cp].getBurstTime());
-            all_p[cp].addContextSwitch();
+            //all_p[cp].addContextSwitch();
             int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
             all_p[cp].setBlockedUntil(returnTime);
             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
