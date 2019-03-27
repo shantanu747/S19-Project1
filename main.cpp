@@ -1106,7 +1106,6 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     totalWaitTime += waitTime;
   }
 
-  /*
   ofstream outfile("simout.txt");
   //outfile.precision(6);
   outfile << "Algorithm SRT" << endl;
@@ -1116,7 +1115,6 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
   outfile << "-- total number of context switches: " << contextSwitches << endl;
   outfile << "-- total number of preemptions: 0" << endl;
   outfile.close();
-  */
 }
 
 int main(int argc, char const *argv[])
