@@ -510,6 +510,10 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   ofstream outfile("simout.txt");
   //outfile.precision(6);
   outfile << "Algorithm FCFS" << endl;
+  outfile << "Total turnaround time: " << totalTurnaroundTime << endl;
+  outfile << "Total burst time: " << totalBurstTime << endl;
+  outfile << "Total burst count " << totalBursts << endl;
+  outfile << "Total wait time " << totalWaitTime << endl;
   outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
   outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/totalBursts << " ms" << endl;
   outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<< totalTurnaroundTime/totalBursts << "ms" << endl;
