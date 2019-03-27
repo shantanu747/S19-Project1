@@ -297,8 +297,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
   }
-  cout << "\n";
-
+  
   cout << "time " << time << "ms: Simulator started for FCFS ";
   printQ(readyQ);
 
