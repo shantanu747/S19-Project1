@@ -371,7 +371,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
           cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived; added to ready queue ";
           printQ(readyQ);
         }
-        
+
         if (!firstProcessArrived)
         {
           firstProcessArrived = true;
@@ -439,7 +439,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
           cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
           printQ(readyQ);
         }
-        
+
         if(readyQ.size() > 0)
         {
           startNextProcess = time + t_cs; //next process starts at this time
@@ -476,7 +476,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
         printQ(readyQ);
       }
-      
+
       all_p[cp].addContextSwitch();
     }
     time++;
@@ -502,7 +502,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
     totalBurstTime += all_p[i].getCPUTime();
     contextSwitches += all_p[i].getContextSwitchCount();
     int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs*2));
     totalWaitTime += waitTime;
   }
 
@@ -510,8 +510,8 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   //outfile.precision(6);
   outfile << "Algorithm FCFS" << endl;
   outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
-  outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/contextSwitches << " ms" << endl;
-  outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<<totalTurnaroundTime/contextSwitches << "ms" << endl;
+  outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/totalBursts << " ms" << endl;
+  outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<< totalTurnaroundTime/totalBursts << "ms" << endl;
   outfile << "-- total number of context switches: " << contextSwitches << endl;
   outfile << "-- total number of preemptions: 0" << endl;
   outfile.close();
@@ -562,7 +562,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 {
                   cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived; added to ready queue ";
                 }
-                
+
                 if(rradd == "BEGINNING")
                 {
                   readyQ.push_front(all_p[i]);
@@ -808,7 +808,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
                 printQ_RR(readyQ);
               }
-              
+
             }
             all_p[cp].setRemainingTimeInBurst(0); //this way we know to send process to IO at burst end
           }
@@ -1045,7 +1045,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
             printQ(readyQ);
           }
           else
-          { 
+          {
             //Output event details if time under 1000
             if(time <= 999)
             {
