@@ -693,6 +693,7 @@ void SRT(vector <Process> p, int n, int t_cs)
   int burst_end = -1; // acts as marker for when next context switch/preemption should occur
 
   int cp; //To hold the data for the current bursting process
+  float alpha = 0.5;
 
   //Initial output
   for(int i = 0; i < all_p.size(); i++)
@@ -700,7 +701,7 @@ void SRT(vector <Process> p, int n, int t_cs)
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
   }
 
-  cout << "time " << time << "ms: Simulator started for SRT " << endl;
+  cout << "time " << time << "ms: Simulator started for SRT ";
   printQ(readyQ);
 
   //Iterates until all processes have been added to serviceQ
@@ -718,7 +719,7 @@ void SRT(vector <Process> p, int n, int t_cs)
       else
       {
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
-        printQ_RR(readyQ);
+        printQ(readyQ);
       }
       all_p[cp].addContextSwitch();
     }
@@ -760,8 +761,9 @@ void SRT(vector <Process> p, int n, int t_cs)
           all_p[cp].addPreemptedCount();
           all_p[cp].addContextSwitch();
           startNextProcess = time + t_cs;
-          cout << "time" << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) completed I/O and will preempt " << all_p[cp].getID() <<" ";
+          cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) completed I/O and will preempt " << all_p[cp].getID() <<" ";
           printQ(readyQ);
+          readyQ.push_back(all_p[cp]);
         }
         else
         {
@@ -795,6 +797,7 @@ void SRT(vector <Process> p, int n, int t_cs)
 
     if(cpuInUse)
     {
+      //If readyQ front will preempt the current process
       if(readyQ[0].getRemainingTimeInBurst() < all_p[cp].getRemainingTimeInBurst())
       {
         decisionTime = time + t_cs/2;
@@ -806,11 +809,20 @@ void SRT(vector <Process> p, int n, int t_cs)
       }
       else
       {
-        int newTime = all_p[cp].getRemainingTimeInBurst() - 1;
-        all_p[cp].setRemainingTimeInBurst(newTime);
+        if(time != startNextProcess)
+        {
+          int newTime = all_p[cp].getRemainingTimeInBurst() - 1;
+          all_p[cp].setRemainingTimeInBurst(newTime);
+        }
         if(all_p[cp].getRemainingTimeInBurst() == 0)
         {
           all_p[cp].decreaseCPUBursts();
+
+          if(readyQ.size() > 0)
+          {
+            decisionTime = time + (t_cs/2);
+            startNextProcess = time + t_cs;
+          }
           if(all_p[cp].getNumBursts() == 0)
           {
             //process has finished executing, setServiced
@@ -823,7 +835,12 @@ void SRT(vector <Process> p, int n, int t_cs)
           else
           {
             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
-            printQ_RR(readyQ);
+            printQ(readyQ);
+            int newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+            //newTau = newTau + 1;
+            all_p[cp].setTau(newTau);
+            cout << "time " << time << "ms: Recalculated tau = " << newTau << "ms for process " << all_p[cp].getID() << " ";
+            printQ(readyQ);
             all_p[cp].resetCPUBurst();
             all_p[cp].resetPreempted();
             all_p[cp].setRemainingTimeInBurst(all_p[cp].getBurstTime());
@@ -831,7 +848,7 @@ void SRT(vector <Process> p, int n, int t_cs)
             int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
             all_p[cp].setBlockedUntil(returnTime);
             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
-            printQ_RR(readyQ);
+            printQ(readyQ);
           }
           cpuInUse = false;
         }
@@ -839,6 +856,8 @@ void SRT(vector <Process> p, int n, int t_cs)
     }
     time++;
   }
+  cout << "time " << time+(t_cs/2)-1 << "ms: Simulator ended for SRT ";
+  printQ(readyQ);
 
   //******************************//
   // END OF FUNCTION CALCULATIONS //
