@@ -148,9 +148,11 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   int cp;
 
   //Initial output
+  int totalBursts = 0;
   for(int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+    totalBursts += all_p[i].getNumBursts();
   }
 
   // Begin algorithm simulation
@@ -195,6 +197,8 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       {
         //process is finished, no need for IO
         all_p[cp].setServiced();
+        int tat = time - all_p[cp].getArrivalTime();
+        all_p[cp].setTurnaroundTime(tat);
         serviceQ.push_back(all_p[cp]);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
         printQ(readyQ);
@@ -264,16 +268,30 @@ void SJF(vector<Process> all_p, int n, int switch_time)
   printQ(readyQ);
 
   // calculations for avg algorithm stats
-  float total_turn_around_time = 0;
-  float total_burst_times = 0;
-  float total_wait_time = 0;
+  float totalTurnaroundTime = 0;
+  float totalBurstTime = 0;
+  float totalWaitTime = 0;
 
-  int context_switches = 0;
+  int contextSwitches = 0;
 
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
   float avg_wt = 0.0; // average wait time
 
+  for(int i = 0; i < all_p.size(); i++)
+  {
+    totalTurnaroundTime += all_p[i].getTurnaroundTime();
+    totalBurstTime += all_p[i].getCPUTime();
+    contextSwitches += all_p[i].getContextSwitchCount();
+    int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    totalWaitTime += waitTime;
+  }
+
+  cout << "Average CPU burst time " << totalBurstTime/totalBursts << "ms" << endl;
+  cout << "Average wait time " << totalWaitTime/totalBursts << "ms" << endl;
+  cout << "Total number of context switches " << contextSwitches << endl;
+  cout << "Average tat " << totalTurnaroundTime/totalBursts << "ms" << endl;
 }
 
 void FCFS(vector < Process > all_p, int n, int switch_time)
@@ -412,11 +430,11 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   //******************************//
 
   // calculations for avg algorithm stats
-  float total_turn_around_time = 0;
-  float total_burst_times = 0;
-  float total_wait_time = 0;
+  float totalTurnaroundTime = 0;
+  float totalBurstTime = 0;
+  float totalWaitTime = 0;
 
-  int context_switches = 0;
+  int contextSwitches = 0;
 
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
@@ -513,6 +531,8 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               {
                 //process has finished executing, setServiced
                 all_p[cp].setServiced();
+                int tat = time - all_p[cp].getArrivalTime();
+                all_p[cp].setTurnaroundTime(tat);
                 serviceQ.push_back(all_p[cp]);
                 //all_p[cp].addContextSwitch();
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
@@ -559,6 +579,8 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
                 //process just finished CPU burst, has no more CPU or IO bursts remaining
                 //process is serviced
                 all_p[cp].setServiced();
+                int tat = time - all_p[cp].getArrivalTime();
+                all_p[cp].setTurnaroundTime(tat);
                 //all_p[cp].addContextSwitch();
                 serviceQ.push_back(all_p[cp]);
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
@@ -664,12 +686,12 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     }
 
     // calculations for avg algorithm stats
-    float total_turn_around_time = 0;
-    float total_burst_times = 0;
-    float total_wait_time = 0;
+    float totalTurnaroundTime = 0;
+    float totalBurstTime = 0;
+    float totalWaitTime = 0;
 
     int preemptions = 0;
-    int context_switches = 0;
+    int contextSwitches = 0;
 
     float avg_tat = 0.0; // average turn around time
     float avg_bt = 0.0; // average burst time
@@ -684,9 +706,9 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR ";
     printQ_RR(readyQ);
 
-    avg_tat = total_turn_around_time / float(context_switches);
-    avg_bt = total_burst_times / float(context_switches);
-    avg_wt = total_wait_time / float(context_switches);
+    avg_tat = totalTurnaroundTime / float(contextSwitches);
+    avg_bt = totalBurstTime / float(contextSwitches);
+    avg_wt = totalWaitTime / float(contextSwitches);
 }
 
 void SRT(vector <Process> p, int n, int t_cs)
@@ -837,6 +859,8 @@ void SRT(vector <Process> p, int n, int t_cs)
           {
             //process has finished executing, setServiced
             all_p[cp].setServiced();
+            int tat = time - all_p[cp].getArrivalTime();
+            all_p[cp].setTurnaroundTime(tat);
             serviceQ.push_back(all_p[cp]);
             //all_p[cp].addContextSwitch();
             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
@@ -874,12 +898,12 @@ void SRT(vector <Process> p, int n, int t_cs)
   //******************************//
 
   // calculations for avg algorithm stats
-  float total_turn_around_time = 0;
-  float total_burst_times = 0;
-  float total_wait_time = 0;
+  float totalTurnaroundTime = 0;
+  float totalBurstTime = 0;
+  float totalWaitTime = 0;
 
   int preemptions = 0;
-  int context_switches = 0;
+  int contextSwitches = 0;
 
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
@@ -950,11 +974,11 @@ int main(int argc, char const *argv[])
   cout << endl;
   //processes = process_helper();
   //SRT(processes, n, t_cs);
-  processes = process_helper();
-  FCFS(processes, n, t_cs);
-  cout << endl;
-  processes = process_helper();
-  RR(processes, n, t_cs, timeslice, rradd);
-  cout << endl;
+  //processes = process_helper();
+  //FCFS(processes, n, t_cs);
+  //cout << endl;
+  //processes = process_helper();
+  //RR(processes, n, t_cs, timeslice, rradd);
+  //cout << endl;
   return 0;
 }

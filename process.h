@@ -28,6 +28,8 @@ public:
     int getPreemptedCount() const;
     int getTau() const;
     bool getPreempted() const;
+    int getTurnaroundTime() const;
+    int getCPUTime() const;
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O

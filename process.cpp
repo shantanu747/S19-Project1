@@ -54,6 +54,12 @@ Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vect
 
     ioTimes = ioTimer;
     cpuTimes = burstTimes;
+
+    cpuTime = 0;
+    for(int i = 0; i < burstTimes.size(); i++)
+    {
+      cpuTime += burstTimes[i];
+    }
 }
 
 // ACCESSORS
@@ -126,6 +132,17 @@ bool Process::getPreempted() const
 {
   return gotPreempted;
 }
+
+int Process::getTurnaroundTime() const
+{
+  return turnaroundTime;
+}
+
+int Process::getCPUTime() const
+{
+  return cpuTime;
+}
+
 
 //MODIFIERS
 void Process::setBlockedUntil(int b)
