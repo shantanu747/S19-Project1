@@ -229,9 +229,10 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
           cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
           printQ(readyQ);
         }
-        int newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+        float newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+        newTau = ceil(newTau);
         //newTau = newTau + 1;
-        all_p[cp].setTau(newTau);
+        all_p[cp].setTau(int(newTau));
 
         //Output event details if time under 1000
         if(time <= 999)
@@ -1056,9 +1057,10 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
               cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
               printQ(readyQ);
             }
-            int newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+            float newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
+            newTau = ceil(newTau);
             //newTau = newTau + 1;
-            all_p[cp].setTau(newTau);
+            all_p[cp].setTau(int(newTau));
 
             //Output event details if time under 1000
             if(time <= 999)
