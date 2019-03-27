@@ -10,6 +10,7 @@
 #include <deque>
 #include <cassert>
 #include <cmath>
+#include <algorithm>
 
 #include "process.h"
 
@@ -25,7 +26,7 @@ void printQ(vector<Process> &all)
     }
     string q;
     q += "[Q ";
-    for (int i = 0; i < all.size(); i++)
+    for(unsigned int i = 0; i < all.size(); i++)
     {
         q += all[i].getID();
         if(i == all.size()-1){
@@ -53,7 +54,7 @@ void printQ_RR(deque<Process> &all)
         return;
     }
     string queue = "[Q ";
-    for (int i = 0; i < all.size(); i++)
+    for(unsigned int i = 0; i < all.size(); i++)
     {
         queue += all[i].getID();
         if(i == all.size()-1){
@@ -69,9 +70,9 @@ void printQ_RR(deque<Process> &all)
 // after each simulation algorithm ends, we regenerate vector<Process>
 // with new burst times, burst count, io times
 // call next simulation
-vector<Process> process_helper(long int s, int lamb, int ub, int num)
+vector<Process> process_helper(long int sd, float lamb, int ub, int num)
 {
-  long int seed = s;
+  long int seed = sd;
   srand48(seed);
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   float lambda = lamb;
@@ -148,7 +149,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 
   //Initial output
   int totalBursts = 0;
-  for(int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
     totalBursts += all_p[i].getNumBursts();
@@ -158,7 +159,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
   cout << "time " << time << "ms: Simulator started for SJF ";
   printQ(readyQ);
 
-  while(serviceQ.size() != numProcesses)
+  while(int(serviceQ.size()) != numProcesses)
   {
     //Beginning of each iteration check for processes arriving
     //Also check for processes coming back from IO
@@ -186,7 +187,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
         all_p[i].resetIOBurst();
       }
     }
-    sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
+    std::sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
 
     //burst ended, send to IO, reassign current process
     if(cpuInUse && time == burst_end)
@@ -241,7 +242,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 
     if(!cpuInUse && time == decisionTime && readyQ.size() > 0)
     {
-      for(int i = 0; i < all_p.size(); i++)
+      for(unsigned int i = 0; i < all_p.size(); i++)
       {
         if(all_p[i].getID() == readyQ[0].getID())
         {
@@ -274,7 +275,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 
   int contextSwitches = 0;
 
-  for(int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     totalTurnaroundTime += all_p[i].getTurnaroundTime();
     totalBurstTime += all_p[i].getCPUTime();
@@ -314,7 +315,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
 
   //Initial output
   int totalBursts = 0;
-  for (int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
     totalBursts += all_p[i].getNumBursts();
@@ -327,7 +328,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   while (serviceQ.size() != all_p.size())
   {
     //Iterates over each process to see if anything arrives at this time
-    for (int i = 0; i < all_p.size(); i++)
+    for(unsigned int i = 0; i < all_p.size(); i++)
     {
       //Check to see if i-th process arrives *now*
       if (all_p[i].getArrivalTime() == time)
@@ -404,7 +405,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
     //CPU ready to accept frontmost process from the readyQ
     if (!cpuInUse && time == startNextProcess)
     {
-      for (int i = 0; i < all_p.size(); i++)
+      for(unsigned int i = 0; i < all_p.size(); i++)
       {
         if (all_p[i].getID() == readyQ[0].getID())
         {
@@ -437,7 +438,7 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
 
   int contextSwitches = 0;
 
-  for(int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     totalTurnaroundTime += all_p[i].getTurnaroundTime();
     totalBurstTime += all_p[i].getCPUTime();
@@ -462,7 +463,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 {
     deque<Process> all_p;
     int totalBursts = 0;
-    for(int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
+    for(unsigned int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
       cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
       all_p.push_back(p[i]);
@@ -493,7 +494,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     {
         //before adding/removing any process from CPU, make sure we have
         //the proper readyQ needed
-        for (int i = 0; i < all_p.size(); i++)
+        for(unsigned int i = 0; i < all_p.size(); i++)
         {
             // Check if any processes arrive at this time
             if (all_p[i].getArrivalTime() == time )
@@ -659,7 +660,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
         if(!cpuInUse && time == decisionTime && readyQ.size() != 0)
         {
           //assign this as our current process to start loading in
-          for(int i = 0; i < all_p.size(); i++)
+          for(unsigned int i = 0; i < all_p.size(); i++)
           {
             if(all_p[i].getID() == readyQ[0].getID())
             {
@@ -717,7 +718,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     int contextSwitches = 0;
 
-    for(int i = 0; i < all_p.size(); i++)
+    for(unsigned int i = 0; i < all_p.size(); i++)
     {
       totalTurnaroundTime += all_p[i].getTurnaroundTime();
       totalBurstTime += all_p[i].getCPUTime();
@@ -755,7 +756,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
 
   //Initial output
   int totalBursts = 0;
-  for(int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
     totalBursts += all_p[i].getNumBursts();
@@ -785,13 +786,13 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     }
 
     //Iterates over each process to see if anything arrives at this time
-    for(int i = 0; i < all_p.size(); i++)
+    for(unsigned int i = 0; i < all_p.size(); i++)
     {
       //Check to see if i-th process arrives *now*
       if(all_p[i].getArrivalTime() == time)
       {
         readyQ.push_back(all_p[i]);
-        sort(readyQ.begin(), readyQ.end(), sortHelper);
+        std::sort(readyQ.begin(), readyQ.end(), sortHelper);
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) arrived; added to ready queue ";
         printQ(readyQ);
 
@@ -811,7 +812,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
       if(all_p[i].getBlockedUntil() == time)
       {
         readyQ.push_back(all_p[i]);
-        sort(readyQ.begin(), readyQ.end(), sortHelper);
+        std::sort(readyQ.begin(), readyQ.end(), sortHelper);
         all_p[i].decreaseIOBursts(); //another IO bursts completed, reduce number of bursts needed
         all_p[i].resetIOBurst();
         if(cpuInUse && all_p[i].getRemainingTimeInBurst() < all_p[cp].getRemainingTimeInBurst())
@@ -844,7 +845,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     if(!cpuInUse && time == decisionTime && readyQ.size() != 0)
     {
       //assign this as our current process to start loading in
-      for(int i = 0; i < all_p.size(); i++)
+      for(unsigned int i = 0; i < all_p.size(); i++)
       {
         if(all_p[i].getID() == readyQ[0].getID())
         {
@@ -932,7 +933,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
 
   int contextSwitches = 0;
 
-  for(int i = 0; i < all_p.size(); i++)
+  for(unsigned int i = 0; i < all_p.size(); i++)
   {
     totalTurnaroundTime += all_p[i].getTurnaroundTime();
     totalBurstTime += all_p[i].getCPUTime();
@@ -968,16 +969,8 @@ int main(int argc, char const *argv[])
               queue for RR. Optional
   */
 
-
-
-  if(argc != 8 || argc != 9)
-  {
-    std::cerr << "ERROR: Incorrect number of arguments supplied!" << '\n';
-    return 1;
-  }
-
   long int seed = atoi(argv[1]);
-  int lambda = atoi(argv[2]);
+  float lambda = atof(argv[2]);
   int upper_bound = atoi(argv[3]);
   int n = atoi(argv[4]);
 
@@ -992,7 +985,7 @@ int main(int argc, char const *argv[])
   {
     cerr << "ERROR: t_cs needs to be an even integer!" << '\n';
   }
-  int alpha = atoi(argv[6]);
+  float alpha = atof(argv[6]);
   int timeslice = atoi(argv[7]);
   string rradd;
   if(argc == 9) //optional argument supplied
@@ -1011,8 +1004,10 @@ int main(int argc, char const *argv[])
   cout << endl;
   processes = process_helper(seed, lambda, upper_bound, n);
   SRT(processes, n, t_cs, alpha);
+  cout << endl;
   processes = process_helper(seed, lambda, upper_bound, n);
   FCFS(processes, n, t_cs);
+  cout << endl;
   processes = process_helper(seed, lambda, upper_bound, n);
   RR(processes, n, t_cs, timeslice, rradd);
   return 0;
