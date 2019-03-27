@@ -31,7 +31,9 @@ void printQ(vector<Process> &all)
         if(i == all.size()-1){
           q += "]";
         }
-        q += " ";
+        else{
+          q += " ";
+        }
     }
     //q.pop_back();
     cout << q << endl;
@@ -57,7 +59,9 @@ void printQ_RR(deque<Process> &all)
         if(i == all.size()-1){
           queue += "]";
         }
-        queue += " ";
+        else{
+          queue += " ";
+        }
     }
     cout << queue << endl;
 }
@@ -162,7 +166,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       if(time == all_p[i].getArrivalTime())
       {
         readyQ.push_back(all_p[i]);
-        cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived; added to ready queue ";
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) arrived; added to ready queue ";
         printQ(readyQ);
         if(!firstProcessArrived)
         {
@@ -204,7 +208,7 @@ void SJF(vector<Process> all_p, int n, int switch_time)
       else if(all_p[cp].getNumBursts() > 0)
       {
         //IO needed
-        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " (tau " << all_p[cp].getTau() <<"ms) completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
         printQ(readyQ);
         int newTau = (alpha*all_p[cp].getBurstTime()) + ((1-alpha)*all_p[cp].getTau());
         //newTau = newTau + 1;
@@ -634,12 +638,12 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             burst_end = time + all_p[cp].getRemainingTimeInBurst();
             if(all_p[cp].getPreempted())
             {
-              cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
+              cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU with " << all_p[cp].getRemainingTimeInBurst() << "ms remaining ";
               printQ_RR(readyQ);
             }
             else
             {
-              cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
+              cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getRemainingTimeInBurst() << "ms burst ";
               printQ_RR(readyQ);
             }
             all_p[cp].setRemainingTimeInBurst(0); //this way we know to send process to IO at burst end
@@ -650,7 +654,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             burst_end = time + t_slice;
             int difference = all_p[cp].getRemainingTimeInBurst() - t_slice;
             all_p[cp].setRemainingTimeInBurst(difference);
-            cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using CPU for " << t_slice << "ms burst ";
+            cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << t_slice << "ms burst ";
             printQ_RR(readyQ);
           }
           all_p[cp].addContextSwitch(); //switch from waitQ to CPU happened
@@ -677,7 +681,8 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 
     }
 
-    cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR" << endl;
+    cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR ";
+    printQ_RR(readyQ);
 
     avg_tat = total_turn_around_time / float(context_switches);
     avg_bt = total_burst_times / float(context_switches);
@@ -737,7 +742,7 @@ void SRT(vector <Process> p, int n, int t_cs)
       {
         readyQ.push_back(all_p[i]);
         sort(readyQ.begin(), readyQ.end(), sortHelper);
-        cout << "time " << time << "ms: Process " << all_p[i].getID() << " arrived; added to ready queue ";
+        cout << "time " << time << "ms: Process " << all_p[i].getID() << " (tau " << all_p[i].getTau() << "ms) arrived; added to ready queue ";
         printQ(readyQ);
 
         //Signifies the first process has arrived
