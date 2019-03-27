@@ -534,12 +534,16 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
             //Remaining time might be less than t_slice
             else if(all_p[cp].getRemainingTimeInBurst() <= t_slice)
             {
+              cout << "time " << time << "ms: Time slice expired; no preemption because ready queue is empty ";
+              printQ_RR(readyQ);
               burst_end = time + all_p[cp].getRemainingTimeInBurst();
               all_p[cp].setRemainingTimeInBurst(0);
             }
             //extend by t_slice with no preemption
             else
             {
+              cout << "time " << time << "ms: Time slice expired; no preemption because ready queue is empty ";
+              printQ_RR(readyQ);
               burst_end = time + t_slice;
               int difference = all_p[cp].getRemainingTimeInBurst() - t_slice;
               all_p[cp].setRemainingTimeInBurst(difference);
@@ -953,6 +957,5 @@ int main(int argc, char const *argv[])
   cout << endl;
   processes = process_helper();
   RR(processes, n, t_cs, timeslice, rradd);
-  cout << endl;
   return 0;
 }
