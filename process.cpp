@@ -56,7 +56,7 @@ Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vect
     cpuTimes = burstTimes;
 
     cpuTime = 0;
-    for(int i = 0; i < burstTimes.size(); i++)
+    for(unsigned int i = 0; i < burstTimes.size(); i++)
     {
       cpuTime += burstTimes[i];
     }
