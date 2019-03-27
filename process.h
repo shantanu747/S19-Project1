@@ -27,6 +27,7 @@ public:
     int getWaitTime() const;
     int getPreemptedCount() const;
     int getTau() const;
+    bool getPreempted() const;
 
     //Modifiers
     void setBlockedUntil(int b); //tells us when to bring process back from I/O
@@ -41,6 +42,7 @@ public:
     void setTau(int t);
     void resetCPUBurst();
     void resetIOBurst();
+    void resetPreempted();
 
 private:
     char pid;
@@ -54,6 +56,7 @@ private:
     int blockedUntil;
     int tau;
     bool serviced;
+    bool gotPreempted;
 
     vector<int> cpuTimes;
     vector<int> ioTimes;

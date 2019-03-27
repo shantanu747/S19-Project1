@@ -50,6 +50,7 @@ Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vect
     preemptedCount = 0;
     contextSwitchCount = 0;
     tau = 1/lambda;
+    gotPreempted = false;
 
     ioTimes = ioTimer;
     cpuTimes = burstTimes;
@@ -121,6 +122,11 @@ int Process::getTau() const
   return tau;
 }
 
+bool Process::getPreempted() const
+{
+  return gotPreempted;
+}
+
 //MODIFIERS
 void Process::setBlockedUntil(int b)
 {
@@ -165,6 +171,7 @@ void Process::setWaitTime(int w)
 void Process::addPreemptedCount()
 {
   preemptedCount += 1;
+  gotPreempted = true;
 }
 
 void Process::setTau(int t)
@@ -192,4 +199,9 @@ void Process::resetIOBurst()
   else{
     ioTime = 0;
   }
+}
+
+void Process::resetPreempted()
+{
+  gotPreempted = false;
 }
