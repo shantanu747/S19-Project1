@@ -289,10 +289,15 @@ void SJF(vector<Process> all_p, int n, int switch_time)
     totalWaitTime += waitTime;
   }
 
-  cout << "Average CPU burst time " << totalBurstTime/totalBursts << "ms" << endl;
-  cout << "Average wait time " << totalWaitTime/totalBursts << "ms" << endl;
-  cout << "Total number of context switches " << contextSwitches << endl;
-  cout << "Average tat " << totalTurnaroundTime/totalBursts << "ms" << endl;
+  ofstream outfile("simout.txt");
+  //outfile.precision(6);
+  outfile << "Algorithm SJF" << endl;
+  outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
+  outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/contextSwitches << " ms" << endl;
+  outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<<totalTurnaroundTime/contextSwitches << "ms" << endl;
+  outfile << "-- total number of context switches: " << contextSwitches << endl;
+  outfile << "-- total number of preemptions: 0" << endl;
+  outfile.close();
 }
 
 void FCFS(vector < Process > all_p, int n, int switch_time)
@@ -316,9 +321,11 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   int ip; //Holds current process in IO
 
   //Initial output
+  int totalBursts = 0;
   for (int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+    totalBursts += all_p[i].getNumBursts();
   }
 
   cout << "time " << time << "ms: Simulator started for FCFS ";
@@ -441,15 +448,37 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
   float avg_wt = 0.0; // average wait time
+
+  for(int i = 0; i < all_p.size(); i++)
+  {
+    totalTurnaroundTime += all_p[i].getTurnaroundTime();
+    totalBurstTime += all_p[i].getCPUTime();
+    contextSwitches += all_p[i].getContextSwitchCount();
+    int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    totalWaitTime += waitTime;
+  }
+
+  ofstream outfile("simout.txt");
+  //outfile.precision(6);
+  outfile << "Algorithm FCFS" << endl;
+  outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
+  outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/contextSwitches << " ms" << endl;
+  outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<<totalTurnaroundTime/contextSwitches << "ms" << endl;
+  outfile << "-- total number of context switches: " << contextSwitches << endl;
+  outfile << "-- total number of preemptions: 0" << endl;
+  outfile.close();
 }
 
 void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
 {
     deque<Process> all_p;
+    int totalBursts = 0;
     for(int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
       cout << "Process " << p[i].getID() << " [NEW] (arrival time " << p[i].getArrivalTime() << " ms) " << p[i].getNumBursts() << " CPU bursts" << endl;
       all_p.push_back(p[i]);
+      totalBursts += all_p[i].getNumBursts();
     }
 
     int t_cs = switch_time; // takes this much time to make a context switch
@@ -690,31 +719,39 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
         }
         time++;
     }
+    cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR ";
+    printQ_RR(readyQ);
 
     // calculations for avg algorithm stats
     float totalTurnaroundTime = 0;
     float totalBurstTime = 0;
     float totalWaitTime = 0;
 
-    int preemptions = 0;
     int contextSwitches = 0;
 
     float avg_tat = 0.0; // average turn around time
     float avg_bt = 0.0; // average burst time
     float avg_wt = 0.0; // average wait time
 
-
     for(int i = 0; i < all_p.size(); i++)
     {
-
+      totalTurnaroundTime += all_p[i].getTurnaroundTime();
+      totalBurstTime += all_p[i].getCPUTime();
+      contextSwitches += all_p[i].getContextSwitchCount();
+      int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
+      waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+      totalWaitTime += waitTime;
     }
 
-    cout <<"time " << time+(t_cs/2)-1 << "ms: Simulator ended for RR ";
-    printQ_RR(readyQ);
-
-    avg_tat = totalTurnaroundTime / float(contextSwitches);
-    avg_bt = totalBurstTime / float(contextSwitches);
-    avg_wt = totalWaitTime / float(contextSwitches);
+    ofstream outfile("simout.txt");
+    //outfile.precision(6);
+    outfile << "Algorithm RR" << endl;
+    outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
+    outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/contextSwitches << " ms" << endl;
+    outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<<totalTurnaroundTime/contextSwitches << "ms" << endl;
+    outfile << "-- total number of context switches: " << contextSwitches << endl;
+    outfile << "-- total number of preemptions: 0" << endl;
+    outfile.close();
 }
 
 void SRT(vector <Process> p, int n, int t_cs)
@@ -734,9 +771,11 @@ void SRT(vector <Process> p, int n, int t_cs)
   float alpha = 0.5;
 
   //Initial output
+  int totalBursts = 0;
   for(int i = 0; i < all_p.size(); i++)
   {
     cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+    totalBursts += all_p[i].getNumBursts();
   }
 
   cout << "time " << time << "ms: Simulator started for SRT ";
@@ -908,12 +947,31 @@ void SRT(vector <Process> p, int n, int t_cs)
   float totalBurstTime = 0;
   float totalWaitTime = 0;
 
-  int preemptions = 0;
   int contextSwitches = 0;
 
   float avg_tat = 0.0; // average turn around time
   float avg_bt = 0.0; // average burst time
   float avg_wt = 0.0; // average wait time
+
+  for(int i = 0; i < all_p.size(); i++)
+  {
+    totalTurnaroundTime += all_p[i].getTurnaroundTime();
+    totalBurstTime += all_p[i].getCPUTime();
+    contextSwitches += all_p[i].getContextSwitchCount();
+    int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    totalWaitTime += waitTime;
+  }
+
+  ofstream outfile("simout.txt");
+  //outfile.precision(6);
+  outfile << "Algorithm SRT" << endl;
+  outfile << "-- average CPU burst time: " << std::fixed << setprecision(3) << totalBurstTime/totalBursts << " ms" << endl;
+  outfile << "-- average wait time: " << std::fixed << setprecision(3)<< totalWaitTime/contextSwitches << " ms" << endl;
+  outfile << "-- average turnaround time: " << std::fixed << setprecision(3)<<totalTurnaroundTime/contextSwitches << "ms" << endl;
+  outfile << "-- total number of context switches: " << contextSwitches << endl;
+  outfile << "-- total number of preemptions: 0" << endl;
+  outfile.close();
 }
 
 int main(int argc, char const *argv[])
