@@ -327,8 +327,8 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       {
         readyQ.push_back(all_p[i]);
         cout << "time " << time << "ms: Process " << all_p[i].getID() << " completed I/O; added to ready queue ";
-        all_p[i].decreaseIOBursts();
         printQ(readyQ);
+        all_p[i].decreaseIOBursts();
         all_p[i].resetIOBurst();
       }
     }
@@ -342,9 +342,15 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       if (all_p[cp].getNumBursts() == 0)
       {
         all_p[cp].setServiced();
+        all_p[cp].addContextSwitch();
         serviceQ.push_back(all_p[cp]);
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " terminated ";
         printQ(readyQ);
+        if(readyQ.size() > 0)
+        {
+          startNextProcess = time + t_cs; //next process starts at this time
+        }
+        cpuInUse = false;
       }
 
       //Current burst gets sent to IO, CPU use disabled
@@ -352,24 +358,28 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       {
         cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
         printQ(readyQ);
-        startNextIO = time; //time needed to exit CPU
-        startNextProcess = time + t_cs; //next process starts at this time
-        ip = cp;
-        returnTime = startNextIO + all_p[ip].getIOTime();
-        all_p[ip].setBlockedUntil(returnTime);
-        all_p[ip].addContextSwitch(); //increment context switch count for this process
+        all_p[cp].resetCPUBurst();
+        all_p[cp].addContextSwitch(); //increment context switch count for this process
+        int returnTime = time + (t_cs/2) + all_p[cp].getIOTime();
+        all_p[cp].setBlockedUntil(returnTime);
+        cout << "time " << time << "ms: Process " << all_p[cp].getID() << " switching out of CPU; will block on I/O until time " << all_p[cp].getBlockedUntil() << "ms ";
+        printQ(readyQ);
+        if(readyQ.size() > 0)
+        {
+          startNextProcess = time + t_cs; //next process starts at this time
+        }
         cpuInUse = false; //CPU is not in use anymore
       }
     }
 
 
-    if (!cpuInUse && startNextProcess < time && readyQ.size() != 0)
+    if (!cpuInUse && startNextProcess < time && readyQ.size() > 0)
     {
       startNextProcess = time + (t_cs / 2);
     }
 
     //CPU ready to accept frontmost process from the readyQ
-    else if (!cpuInUse && time == startNextProcess)
+    if (!cpuInUse && time == startNextProcess)
     {
       for (int i = 0; i < all_p.size(); i++)
       {
@@ -386,17 +396,11 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
       cout << "time " << time << "ms: Process " << all_p[cp].getID() << " started using the CPU for " << all_p[cp].getBurstTime() << "ms burst ";
       printQ(readyQ);
     }
-
-    //output message saying process is now in IO
-    if (time == startNextIO)
-    {
-      //cout << "IO Time of process " << cp << " is " << all_p[cp].getIOTime() << endl;
-      cout << "time " << time << "ms: Process " << all_p[ip].getID() << " switching out of CPU; will block on I/O until time " << all_p[ip].getBlockedUntil() << "ms ";
-      printQ(readyQ);
-    }
-
     time++;
   }
+
+  cout << "time " << time+(t_cs/2)-1 << "ms: Simulator ended for FCFS ";
+  printQ(readyQ);
 
   //******************************//
   // END OF FUNCTION CALCULATIONS //
@@ -936,13 +940,15 @@ int main(int argc, char const *argv[])
 
   vector<Process> processes;
   processes = process_helper();
-  //cout << processes.size() << endl;
-  //SJF(processes, n, t_cs);
+  SJF(processes, n, t_cs);
+  cout << endl;
   //processes = process_helper();
-  SRT(processes, n, t_cs);
-  //processes = process_helper();
-  //FCFS(processes, n, t_cs);
-  //processes = process_helper();
-  //RR(processes, n, t_cs, timeslice, rradd);
+  //SRT(processes, n, t_cs);
+  processes = process_helper();
+  FCFS(processes, n, t_cs);
+  cout << endl;
+  processes = process_helper();
+  RR(processes, n, t_cs, timeslice, rradd);
+  cout << endl;
   return 0;
 }
