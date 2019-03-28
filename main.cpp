@@ -1015,6 +1015,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
             printQ(readyQ);
           }
           readyQ.push_back(all_p[cp]);
+          //std::sort(readyQ.begin(), readyQ.end(), sortHelper);
         }
         else
         {
@@ -1080,11 +1081,12 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     if(cpuInUse)
     {
       //If readyQ front will preempt the current process
-      if(readyQ[0].getRemainingTimeInBurst() < all_p[cp].getRemainingTimeInBurst())
+      if(readyQ[0].getTau() < all_p[cp].getTau())
       {
         decisionTime = time + t_cs/2;
         startNextProcess = time + t_cs;
         cpuInUse = false;
+        all_p[cp].addPreemptedCount();
 
         //Output event details if time under 1000
         if(time <= 999)
@@ -1093,6 +1095,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
           printQ(readyQ);
         }
         readyQ.push_back(all_p[cp]);
+        //std::sort(readyQ.begin(), readyQ.end(), sortHelper);
       }
       else
       {
