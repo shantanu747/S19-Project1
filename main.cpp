@@ -158,8 +158,15 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
   int totalBursts = 0;
   for(unsigned int i = 0; i < all_p.size(); i++)
   {
-    cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
-    totalBursts += all_p[i].getNumBursts();
+    if(all_p[i].getNumBursts() == 1)
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU burst" << endl;
+    }
+    else
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+      totalBursts += all_p[i].getNumBursts(); 
+    }
   }
 
   // Begin algorithm simulation
@@ -368,8 +375,15 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
   int totalBursts = 0;
   for(unsigned int i = 0; i < all_p.size(); i++)
   {
-    cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
-    totalBursts += all_p[i].getNumBursts();
+    if(all_p[i].getNumBursts() == 1)
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU burst" << endl;
+    }
+    else
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+      totalBursts += all_p[i].getNumBursts(); 
+    }
   }
 
   cout << "time " << time << "ms: Simulator started for FCFS ";
@@ -555,8 +569,15 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     int totalBursts = 0;
     for(unsigned int i = 0; i < p.size(); i++) //convert to deque for push_front capabilities
     {
-      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
-      totalBursts += all_p[i].getNumBursts();
+      if(all_p[i].getNumBursts() == 1)
+      {
+        cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU burst" << endl;
+      }
+      else
+      {
+        cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+        totalBursts += all_p[i].getNumBursts(); 
+      }
     }
 
     int t_cs = switch_time; // takes this much time to make a context switch
@@ -889,7 +910,7 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
     if(all_p.size() == 1)
     {
        totalWaitTime = 0;
-   }
+    }
 
     ofstream outfile;
     outfile.open("simout.txt", std::ios_base::app);
@@ -922,8 +943,15 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
   int totalBursts = 0;
   for(unsigned int i = 0; i < all_p.size(); i++)
   {
-    cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
-    totalBursts += all_p[i].getNumBursts();
+    if(all_p[i].getNumBursts() == 1)
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU burst" << endl;
+    }
+    else
+    {
+      cout << "Process " << all_p[i].getID() << " [NEW] (arrival time " << all_p[i].getArrivalTime() << " ms) " << all_p[i].getNumBursts() << " CPU bursts" << endl;
+      totalBursts += all_p[i].getNumBursts(); 
+    }
   }
 
   cout << "time " << time << "ms: Simulator started for SRT ";
@@ -967,7 +995,12 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
         std::sort(readyQ.begin(), readyQ.end(), sortHelper);
         all_p[i].decreaseIOBursts(); //another IO bursts completed, reduce number of bursts needed
         all_p[i].resetIOBurst();
-        if(cpuInUse && all_p[i].getRemainingTimeInBurst() < all_p[cp].getRemainingTimeInBurst())
+        /*
+        cout << "Incoming process " << all_p[i].getID() << " getremtimeinburst " << all_p[i].getRemainingTimeInBurst() << endl;
+        cout << "Current p " << all_p[cp].getID() << " getremtimeinburst " << all_p[cp].getRemainingTimeInBurst() << endl;
+        cout << "cpuinuse " << cpuInUse << endl;
+        */
+        if(cpuInUse && all_p[i].getTau() < all_p[cp].getTau())
         {
           decisionTime = time + t_cs/2;
           cpuInUse = false;
@@ -1155,6 +1188,10 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
     totalWaitTime += waitTime;
     totalPreempt = totalPreempt + all_p[i].getPreemptedCount();
+  }
+  if(all_p.size() == 1)
+  {
+    totalWaitTime = 0;
   }
 
   ofstream outfile;
