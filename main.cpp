@@ -43,7 +43,14 @@ void printQ(vector<Process> &all)
 //std::sort optional 3rd argument for sorting by remaining time in burst
 bool sortHelper(Process a, Process b)
 {
-  return (a.getTau() < b.getTau());
+  if(a.getTau() == b.getTau())
+  {
+    return (a.getID() < b.getID());
+  }
+  else
+  {
+     return (a.getTau() < b.getTau());
+  }
 }
 
 void printQ_RR(deque<Process> &all)
@@ -161,7 +168,6 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
 
   while(int(serviceQ.size()) != numProcesses)
   {
-
      //Time to put new process into the CPU
      if(!cpuInUse && time == startNextProcess)
      {
@@ -205,6 +211,10 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
          //Output event details if time under 1000
          if(time <= 999)
          {
+           if(all_p[cp].getNumBursts() == 1)
+           {
+             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " burst to go ";
+           }
            cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
            printQ(readyQ);
          }
@@ -246,6 +256,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
       if(time == all_p[i].getBlockedUntil())
       {
         readyQ.push_back(all_p[i]);
+        std::sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
         //Output event details if time under 1000
         if(time <= 999)
         {
@@ -262,7 +273,7 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
       if(time == all_p[i].getArrivalTime())
       {
         readyQ.push_back(all_p[i]);
-
+        std::sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
         //Output event details if time under 1000
         if(time <= 999)
         {
@@ -278,7 +289,6 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
         }
       }
    }
-    std::sort(readyQ.begin(), readyQ.end(), sortHelper); //sorts readyQ by shortest burst time required
 
     if(!cpuInUse && startNextProcess < time && readyQ.size() > 0)
     {
@@ -316,9 +326,14 @@ void SJF(vector<Process> all_p, int n, int switch_time, float a)
     totalBurstTime += all_p[i].getCPUTime();
     contextSwitches += all_p[i].getContextSwitchCount();
     int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs*2));
     totalWaitTime += waitTime;
   }
+
+  if(all_p.size() == 1)
+  {
+     totalWaitTime = 0;
+ }
 
   ofstream outfile;
   outfile.open("simout.txt", std::ios_base::app);
@@ -417,6 +432,10 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
          //Output event details if time under 1000
          if(time <= 999)
          {
+           if(all_p[cp].getNumBursts() == 1)
+           {
+             cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " burst to go ";
+           }
            cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
            printQ(readyQ);
          }
@@ -510,9 +529,14 @@ void FCFS(vector < Process > all_p, int n, int switch_time)
     totalBurstTime += all_p[i].getCPUTime();
     contextSwitches += all_p[i].getContextSwitchCount();
     int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs*2));
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
     totalWaitTime += waitTime;
   }
+
+  if(all_p.size() == 1)
+  {
+     totalWaitTime = 0;
+ }
 
   ofstream outfile;
   outfile.open("simout.txt", std::ios_base::app);
@@ -633,6 +657,10 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               //Output event details if time under 1000
               if(time <= 999)
               {
+                if(all_p[cp].getNumBursts() == 1)
+                {
+                  cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " burst to go ";
+                }
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
                 printQ_RR(readyQ);
               }
@@ -704,6 +732,10 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
               //Output event details if time under 1000
               if(time <= 999)
               {
+                if(all_p[cp].getNumBursts() == 1)
+                {
+                  cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " burst to go ";
+                }
                 cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
                 printQ_RR(readyQ);
               }
@@ -849,11 +881,15 @@ void RR(vector<Process> p, int n, int switch_time, int tslice, string behavior)
       totalBurstTime += all_p[i].getCPUTime();
       contextSwitches += all_p[i].getContextSwitchCount();
       int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-      waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+      waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
       totalWaitTime += waitTime;
       totalPreempt = totalPreempt + all_p[i].getPreemptedCount();
     }
 
+    if(all_p.size() == 1)
+    {
+       totalWaitTime = 0;
+   }
 
     ofstream outfile;
     outfile.open("simout.txt", std::ios_base::app);
@@ -1057,6 +1093,10 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
             //Output event details if time under 1000
             if(time <= 999)
             {
+              if(all_p[cp].getNumBursts() == 1)
+              {
+                cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " burst to go ";
+              }
               cout << "time " << time << "ms: Process " << all_p[cp].getID() << " completed a CPU burst; " << all_p[cp].getNumBursts() << " bursts to go ";
               printQ(readyQ);
             }
@@ -1112,7 +1152,7 @@ void SRT(vector <Process> p, int n, int t_cs, float a)
     totalBurstTime += all_p[i].getCPUTime();
     contextSwitches += all_p[i].getContextSwitchCount();
     int waitTime = all_p[i].getTurnaroundTime() - all_p[i].getCPUTime();
-    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs/2));
+    waitTime = waitTime - (all_p[i].getContextSwitchCount()*(t_cs));
     totalWaitTime += waitTime;
     totalPreempt = totalPreempt + all_p[i].getPreemptedCount();
   }
@@ -1186,6 +1226,5 @@ int main(int argc, char const *argv[])
   cout << endl;
   processes = process_helper(seed, lambda, upper_bound, n);
   RR(processes, n, t_cs, timeslice, rradd);
-  cout << endl;
   return 0;
 }

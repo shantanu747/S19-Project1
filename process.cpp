@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <algorithm>
 #include "process.h"
+#include <cmath>
 using namespace std;
 
 Process::Process() // default constructor
@@ -56,7 +57,8 @@ Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vect
     timeRemainingInBurst = burstTime;
     preemptedCount = 0;
     contextSwitchCount = 0;
-    tau = 1/lambda;
+    int iTau = ceil(1/lambda);
+    tau = int(iTau);
     gotPreempted = false;
 
     ioTimes = ioTimer;
