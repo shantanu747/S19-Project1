@@ -37,8 +37,15 @@ Process::Process(char gid, int arrival, vector<int> burstTimes, int bcount, vect
     burstTime = burstTimes[0];
     burstTimes.erase(burstTimes.begin());
     numBursts = bcount;
-    ioTime = ioTimer[0];
-    ioTimer.erase(ioTimer.begin());
+    if(ioTimer.size() > 0)
+    {
+      ioTime = ioTimer[0];
+      ioTimer.erase(ioTimer.begin());
+    }
+    else
+    {
+      ioTime = 0;
+    }
     numIO = ioCount; //1 less I/O burst needed than CPU bursts
     cpuTime = burstTime*numBursts;
     timeInIO = ioTime*numIO; //total time that will be spent in IO
